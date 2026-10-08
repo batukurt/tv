@@ -3,150 +3,613 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bloomberg Live Stream</title>
+  <title>Live TV Player</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
+    :root {
+      --bg-base: #0f1117;
+      --bg-surface: #1a1d26;
+      --bg-card: #232733;
+      --bg-card-hover: #2e3344;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: #2d3343;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    body {
+      background-color: var(--bg-base);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Fills the entire browser viewport edge-to-edge immediately */
-    #video-wrapper {
-      position: absolute;
+    /* Top navigation / header */
+    header {
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
       top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      z-index: 20;
+    }
+
+    .brand {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .search-box {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-base);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Main layout */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      flex: 1;
+      height: calc(100vh - 61px);
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    /* Player column */
+    .player-section {
+      display: flex;
+      flex-direction: column;
+      background-color: #000;
+      position: relative;
+    }
+
+    .video-viewport {
+      flex: 1;
+      position: relative;
+      background-color: #000;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000;
+      min-height: 340px;
     }
 
     video {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Keeps 16:9 ratio cleanly, or use 'cover' to crop borders */
+      object-fit: contain;
       background: #000;
     }
 
-    /* Seamless click overlay to satisfy browser fullscreen & unmute gesture security */
+    /* Fullscreen Overlay Gate */
     #fullscreen-gate {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: 10;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.45);
+      background: rgba(0, 0, 0, 0.55);
       cursor: pointer;
-      color: #fff;
-      transition: opacity 0.3s ease;
+      backdrop-filter: blur(4px);
+      transition: opacity 0.25s ease;
     }
 
     #fullscreen-gate .btn {
       padding: 14px 28px;
-      font-size: 16px;
+      font-size: 0.95rem;
       font-weight: 600;
-      letter-spacing: 0.5px;
       color: #fff;
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 9999px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      transition: transform 0.15s ease, background 0.15s ease;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
       pointer-events: none;
     }
 
-    #fullscreen-gate:hover .btn {
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.05);
+    .now-playing-bar {
+      padding: 14px 20px;
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .np-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .np-logo {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px;
+    }
+
+    .np-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .np-category {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .player-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: background-color 0.15s;
+    }
+
+    .action-btn:hover {
+      background-color: var(--bg-card-hover);
+    }
+
+    /* Sidebar / Channel List */
+    .sidebar {
+      background-color: var(--bg-surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 12px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .channel-list {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+      padding: 8px;
+    }
+
+    .channel-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .channel-item:hover {
+      background-color: var(--bg-card);
+    }
+
+    .channel-item.active {
+      background-color: var(--bg-card);
+      border-color: var(--accent);
+    }
+
+    .ch-logo-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      padding: 3px;
+    }
+
+    .ch-logo-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .ch-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ch-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ch-tag {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .active-badge {
+      display: none;
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+    }
+
+    .channel-item.active .active-badge {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <div id="video-wrapper">
-    <video id="video" controls autoplay muted playsinline></video>
-
-    <!-- Overlay disappears automatically once tapped/clicked -->
-    <div id="fullscreen-gate">
-      <div class="btn">Click anywhere for Fullscreen & Sound</div>
+  <header>
+    <div class="brand">
+      <div class="live-dot"></div>
+      Live Channels
     </div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search channels...">
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Video Player Section -->
+    <section class="player-section">
+      <div class="video-viewport" id="viewport">
+        <video id="videoPlayer" controls autoplay muted playsinline></video>
+        
+        <!-- One-click fullscreen & sound trigger -->
+        <div id="fullscreen-gate">
+          <div class="btn">Click for Fullscreen & Sound</div>
+        </div>
+      </div>
+
+      <div class="now-playing-bar">
+        <div class="np-info">
+          <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
+          <div>
+            <div id="npTitle" class="np-title">Select a channel</div>
+            <div id="npCategory" class="np-category">-</div>
+          </div>
+        </div>
+        <div class="player-actions">
+          <button class="action-btn" id="fsToggleBtn">Fullscreen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Channel List Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header" id="channelCount">Channels</div>
+      <ul class="channel-list" id="channelList"></ul>
+    </aside>
   </div>
 
   <script>
-    const video = document.getElementById('video');
-    const wrapper = document.getElementById('video-wrapper');
+    const CHANNELS = [
+      {
+        id: "ATV.tr@SD",
+        name: "ATV (Turkiye) (1080p)",
+        group: "General",
+        logo: "https://i.imgur.com/HyVUwFC.png",
+        url: "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/atv/atv_1080p.m3u8"
+      },
+      {
+        id: "CNBCe.tr@SD",
+        name: "CNBC-e",
+        group: "Business;Series",
+        logo: "https://s.cnbce.com/dist/images/logo-nav.png",
+        url: "https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8"
+      },
+      {
+        id: "KanalD.tr@SD",
+        name: "Kanal D (Turkiye) (1080p)",
+        group: "General",
+        logo: "https://i.imgur.com/9o1atM6.png",
+        url: "https://demiroren.daioncdn.net/kanald/kanald.m3u8?app=kanald_web&ce=3"
+      },
+      {
+        id: "FlashHaberTV.tr@SD",
+        name: "Flash Haber TV",
+        group: "News",
+        logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z'/%3E%3C/svg%3E",
+        url: "https://b01c02nl.mediatriple.net/videoonlylive/mtyycglqauzjhlive/broadcast_67c053c48829f.smil/playlist.m3u8"
+      },
+      {
+        id: "HalkTV.tr@SD",
+        name: "Halk TV SD (1080p)",
+        group: "News",
+        logo: "https://i.imgur.com/xM0HA30.png",
+        url: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8"
+      },
+      {
+        id: "NOWTV.tr@SD",
+        name: "NOW TV (720p)",
+        group: "Entertainment",
+        logo: "https://i.imgur.com/5EYjWK7.png",
+        url: "https://uycyyuuzyh.turknet.ercdn.net/nphindgytw/nowtv/nowtv.m3u8"
+      },
+      {
+        id: "NTV.tr@SD",
+        name: "NTV (Turkiye)",
+        group: "General",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/NTV_%28Turkey%29_logo.svg/960px-NTV_%28Turkey%29_logo.svg.png",
+        url: "https://dogus.daioncdn.net/ntv/ntv.m3u8?app=ntv_web"
+      },
+      {
+        id: "Tele1.tr@SD",
+        name: "Tele 1 (1080p)",
+        group: "General",
+        logo: "https://upload.wikimedia.org/wikipedia/tr/4/43/Tele1_logosu.png",
+        url: "https://tele1-live.ercdn.net/tele1/tele1.m3u8"
+      },
+      {
+        id: "BFMTV.fr@SD",
+        name: "BFM TV (1080p)",
+        group: "News",
+        logo: "https://i.imgur.com/YJCcczD.png",
+        url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE"
+      },
+      {
+        id: "BFMBusiness.fr@SD",
+        name: "BFM Business (1080p)",
+        group: "Business;News",
+        logo: "https://i.imgur.com/psqIHn4.png",
+        url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8?end=END&start=LIVE"
+      },
+      {
+        id: "BFMTechCo.fr@SD",
+        name: "BFM Tech & Co (1080p)",
+        group: "News;Science",
+        logo: "https://i.imgur.com/FQ0FpXV.png",
+        url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TECHANDCO/index.m3u8?end=END&start=LIVE"
+      },
+      {
+        id: "BFM2.fr@HD",
+        name: "BFM2 (1080p)",
+        group: "News",
+        logo: "https://alloforfait.fr/wp-content/uploads/2024/03/logo-bfm2-300x200.jpg",
+        url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8"
+      },
+      {
+        id: "CNews.fr@SD",
+        name: "CNews (1080p)",
+        group: "News",
+        logo: "https://i.imgur.com/sSNhk2g.png",
+        url: "https://raw.githubusercontent.com/Paradise-91/ParaTV/main/streams/canalplus/cnews-dm.m3u8"
+      },
+      {
+        id: "BloombergTV.us@US",
+        name: "Bloomberg TV (1080p)",
+        group: "Business",
+        logo: "https://i.imgur.com/OuogLHx.png",
+        url: "http://23.237.104.106:8080/USA_BLOOMBERG/index.m3u8"
+      },
+      {
+        id: "BloombergTV.us@Plus",
+        name: "Bloomberg TV + (2160p)",
+        group: "Business",
+        logo: "https://i.imgur.com/OuogLHx.png",
+        url: "https://d8975dc3.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9CbG9vbWJlcmdUVlBsdXNfSExT/playlist.m3u8"
+      },
+      {
+        id: "CNBCUK.uk@SD",
+        name: "CNBC UK (1080p)",
+        group: "Business;News",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/CNBC_2025.svg/960px-CNBC_2025.svg.png",
+        url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8"
+      },
+      {
+        id: "Antena3Internacional.es@SD",
+        name: "Antena 3 Internacional (1080p)",
+        group: "General",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/8/83/Antena3Internacional2025.png",
+        url: "http://38.252.238.18:8000/play/a04a/index.m3u8"
+      },
+      {
+        id: "NegociosTV.es@SD",
+        name: "Negocios TV (1080p)",
+        group: "Business",
+        logo: "https://m.media-amazon.com/images/I/21HEgSJn2gL.png",
+        url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8"
+      },
+      {
+        id: "ProSieben.de@SD",
+        name: "ProSieben (1080p)",
+        group: "General",
+        logo: "https://i.imgur.com/zZOk3nh.png",
+        url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8"
+      },
+      {
+        id: "VOX.de@SD",
+        name: "VOX",
+        group: "General",
+        logo: "https://i.imgur.com/QPcmfZb.png",
+        url: "https://dash4.antik.sk/live/test_vox_tizen/playlist.m3u8"
+      },
+      {
+        id: "ZDF.de@SD",
+        name: "ZDF",
+        group: "General",
+        logo: "https://i.imgur.com/rtLb6m9.png",
+        url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8"
+      },
+      {
+        id: "RTLTeleLetzebuerg.lu@SD",
+        name: "RTL Tele Letzebuerg (1080p)",
+        group: "General",
+        logo: "https://i.imgur.com/fkW5Gbl.png",
+        url: "https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8"
+      }
+    ];
+
+    const video = document.getElementById('videoPlayer');
+    const viewport = document.getElementById('viewport');
     const gate = document.getElementById('fullscreen-gate');
-    const streamUrl = 'https://d8975dc3.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9CbG9vbWJlcmdUVlBsdXNfSExT/playlist.m3u8';
+    const channelListEl = document.getElementById('channelList');
+    const searchInput = document.getElementById('searchInput');
+    const fsToggleBtn = document.getElementById('fsToggleBtn');
+    const npTitle = document.getElementById('npTitle');
+    const npCategory = document.getElementById('npCategory');
+    const npLogo = document.getElementById('npLogo');
+    const channelCount = document.getElementById('channelCount');
 
-    // 1. Initialize HLS Stream Playback
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true
-      });
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(e => console.log('Autoplay muted play:', e));
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Native Safari / iOS support
-      video.src = streamUrl;
-      video.addEventListener('loadedmetadata', () => {
-        video.play().catch(e => console.log('Autoplay muted play:', e));
+    let currentHls = null;
+    let activeChannelIndex = 0;
+
+    function renderChannels(filterText = '') {
+      channelListEl.innerHTML = '';
+      const filtered = CHANNELS.filter(ch => 
+        ch.name.toLowerCase().includes(filterText.toLowerCase()) || 
+        ch.group.toLowerCase().includes(filterText.toLowerCase())
+      );
+
+      channelCount.textContent = `Channels (${filtered.length})`;
+
+      filtered.forEach((ch) => {
+        const originalIndex = CHANNELS.indexOf(ch);
+        const li = document.createElement('li');
+        li.className = `channel-item ${originalIndex === activeChannelIndex ? 'active' : ''}`;
+        li.innerHTML = `
+          <div class="ch-logo-wrap">
+            <img src="${ch.logo}" alt="${ch.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\'%3E%3Cpath fill=\\'%23888\\' d=\\'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z\\'/%3E%3C/svg%3E'">
+          </div>
+          <div class="ch-info">
+            <div class="ch-name">${ch.name}</div>
+            <div class="ch-tag">${ch.group}</div>
+          </div>
+          <div class="active-badge"></div>
+        `;
+        li.addEventListener('click', () => loadChannel(originalIndex));
+        channelListEl.appendChild(li);
       });
     }
 
-    // 2. Fullscreen Trigger on First Gesture
-    function enterFullscreen() {
-      // Unmute audio
+    function loadChannel(index) {
+      activeChannelIndex = index;
+      const ch = CHANNELS[index];
+
+      npTitle.textContent = ch.name;
+      npCategory.textContent = ch.group;
+      npLogo.src = ch.logo;
+      npLogo.style.display = 'block';
+
+      // Update active selection classes
+      renderChannels(searchInput.value);
+
+      if (Hls.isSupported()) {
+        if (currentHls) currentHls.destroy();
+        currentHls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        currentHls.loadSource(ch.url);
+        currentHls.attachMedia(video);
+        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play().catch(() => {});
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = ch.url;
+        video.play().catch(() => {});
+      }
+    }
+
+    function toggleFullscreen(targetElement = viewport) {
       video.muted = false;
-
-      // Cross-browser Fullscreen request
-      const elem = wrapper;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(err => console.log('Fullscreen error:', err));
-      } else if (elem.webkitRequestFullscreen) { /* Safari / iOS webkit */
-        elem.webkitRequestFullscreen();
-      } else if (video.webkitEnterFullscreen) { /* iOS iPhone video specific */
-        video.webkitEnterFullscreen();
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (targetElement.requestFullscreen) {
+          targetElement.requestFullscreen().catch(err => console.log(err));
+        } else if (targetElement.webkitRequestFullscreen) {
+          targetElement.webkitRequestFullscreen();
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
-
-      // Hide gate overlay
-      gate.style.opacity = '0';
-      setTimeout(() => {
-        gate.style.display = 'none';
-      }, 300);
-
-      window.removeEventListener('click', enterFullscreen);
-      window.removeEventListener('keydown', enterFullscreen);
     }
 
-    gate.addEventListener('click', enterFullscreen);
-    window.addEventListener('keydown', (e) => {
-      if (gate.style.display !== 'none') {
-        enterFullscreen();
-      }
-    }, { once: true });
-  </script>
+    // Fullscreen gate interaction
+    gate.addEventListener('click', () => {
+      toggleFullscreen(viewport);
+      gate.style.opacity = '0';
+      setTimeout(() => { gate.style.display = 'none'; }, 250);
+    });
 
+    fsToggleBtn.addEventListener('click', () => toggleFullscreen(viewport));
+
+    searchInput.addEventListener('input', (e) => {
+      renderChannels(e.target.value);
+    });
+
+    // Initial boot: start with Bloomberg TV+ or first item
+    const defaultIndex = CHANNELS.findIndex(c => c.id === 'BloombergTV.us@Plus');
+    loadChannel(defaultIndex !== -1 ? defaultIndex : 0);
+  </script>
 </body>
 </html>
