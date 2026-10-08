@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Stream</title>
+  <title>Live Stream Fullscreen</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     * {
@@ -11,49 +11,141 @@
       margin: 0;
       padding: 0;
     }
-    body {
-      background-color: #0e1117;
-      color: #fff;
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Fills the entire browser viewport edge-to-edge immediately */
+    #video-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Keeps 16:9 ratio cleanly, or use 'cover' to crop borders */
+      background: #000;
+    }
+
+    /* Seamless click overlay to satisfy browser fullscreen & unmute gesture security */
+    #fullscreen-gate {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      color: #fff;
+      transition: opacity 0.3s ease;
     }
-    .player-wrapper {
-      width: 100%;
-      max-width: 960px;
-      padding: 16px;
+
+    #fullscreen-gate .btn {
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      transition: transform 0.15s ease, background 0.15s ease;
+      pointer-events: none;
     }
-    video {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #000;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+    #fullscreen-gate:hover .btn {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
 
-  <div class="player-wrapper">
+  <div id="video-wrapper">
     <video id="video" controls autoplay muted playsinline></video>
+
+    <!-- Overlay disappears automatically once tapped/clicked -->
+    <div id="fullscreen-gate">
+      <div class="btn">Click anywhere for Fullscreen & Sound</div>
+    </div>
   </div>
 
   <script>
     const video = document.getElementById('video');
+    const wrapper = document.getElementById('video-wrapper');
+    const gate = document.getElementById('fullscreen-gate');
     const streamUrl = 'https://d8975dc3.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9CbG9vbWJlcmdUVlBsdXNfSExT/playlist.m3u8';
 
+    // 1. Initialize HLS Stream Playback
     if (Hls.isSupported()) {
-      const hls = new Hls();
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true
+      });
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(e => console.log('Autoplay muted play:', e));
+      });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Native Safari / iOS support
       video.src = streamUrl;
-      video.addEventListener('loadedmetadata', () => video.play());
+      video.addEventListener('loadedmetadata', () => {
+        video.play().catch(e => console.log('Autoplay muted play:', e));
+      });
     }
+
+    // 2. Fullscreen Trigger on First Gesture
+    function enterFullscreen() {
+      // Unmute audio
+      video.muted = false;
+
+      // Cross-browser Fullscreen request
+      const elem = wrapper;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => console.log('Fullscreen error:', err));
+      } else if (elem.webkitRequestFullscreen) { /* Safari / iOS webkit */
+        elem.webkitRequestFullscreen();
+      } else if (video.webkitEnterFullscreen) { /* iOS iPhone video specific */
+        video.webkitEnterFullscreen();
+      }
+
+      // Hide gate overlay
+      gate.style.opacity = '0';
+      setTimeout(() => {
+        gate.style.display = 'none';
+      }, 300);
+
+      window.removeEventListener('click', enterFullscreen);
+      window.removeEventListener('keydown', enterFullscreen);
+    }
+
+    gate.addEventListener('click', enterFullscreen);
+    window.addEventListener('keydown', (e) => {
+      if (gate.style.display !== 'none') {
+        enterFullscreen();
+      }
+    }, { once: true });
   </script>
 
 </body>
