@@ -22,7 +22,7 @@
       --header-h: 40px;
       --bar-hint-h: 22px;
       --np-bar-h: 44px;
-      --row-h: 26px;
+      --row-h: 24px;
       --sidebar-w: 320px;
     }
 
@@ -205,6 +205,7 @@
       text-align: center;
     }
 
+    /* Bottom Control Bar - Prioritized above sidebar */
     .now-playing-bar {
       height: var(--np-bar-h);
       padding: 0 14px;
@@ -214,7 +215,7 @@
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
-      z-index: 25;
+      z-index: 85;
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
@@ -231,7 +232,7 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background: rgba(15, 17, 23, 0.92);
+      background: rgba(15, 17, 23, 0.94);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -312,7 +313,6 @@
       gap: 4px;
       line-height: 1;
       position: relative;
-      z-index: 2;
     }
 
     .action-btn:hover {
@@ -334,6 +334,7 @@
       pointer-events: none;
     }
 
+    /* 30% Right Hover Sensor */
     #right-hover-zone {
       position: absolute;
       top: 0;
@@ -344,12 +345,13 @@
       pointer-events: auto;
     }
 
+    /* Sidebar: docked above the bottom menu bar in both modes */
     .sidebar {
       position: absolute;
       top: 0;
       right: 0;
+      bottom: var(--np-bar-h); /* Stops perfectly at the top edge of bottom bar */
       width: var(--sidebar-w);
-      height: 100%;
       min-height: 0;
       background-color: rgba(17, 20, 29, 0.96);
       backdrop-filter: blur(16px);
@@ -359,8 +361,20 @@
       flex-direction: column;
       z-index: 70;
       transform: translateX(100%);
-      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.2s ease, box-shadow 0.22s ease;
       box-shadow: -6px 0 28px rgba(0, 0, 0, 0.65);
+    }
+
+    /* In Fullscreen, when bottom bar is hidden, sidebar extends to bottom: 0 */
+    .player-section:fullscreen .sidebar,
+    .player-section:-webkit-full-screen .sidebar {
+      bottom: 0;
+    }
+
+    /* When bottom bar reveals in fullscreen, dock sidebar above it */
+    .player-section:fullscreen .now-playing-bar.reveal-bar ~ .sidebar,
+    .player-section:-webkit-full-screen .now-playing-bar.reveal-bar ~ .sidebar {
+      bottom: var(--np-bar-h);
     }
 
     .sidebar.visible,
@@ -429,7 +443,7 @@
       transition: background-color 0.1s ease;
       border: 1px solid transparent;
       height: var(--row-h);
-      min-height: 20px;
+      min-height: 18px;
       flex: 1 1 0%;
       line-height: 1;
     }
@@ -678,7 +692,7 @@
           <video id="videoPlayer" controls autoplay muted playsinline webkit-playsinline></video>
 
           <div id="fullscreen-gate">
-            <div class="btn">Tap or Press [Space] to Start / Fullscreen / Unmute</div>
+            <div class="btn">Tap or Press [Space] to Start / Fullscreen</div>
           </div>
 
           <div id="fs-osd-container">
@@ -720,10 +734,10 @@
           </div>
         </div>
 
-        <!-- 30% Width Hover Trigger Zone inside player container (active in normal & fullscreen) -->
+        <!-- 30% Width Hover Trigger Zone inside player container -->
         <div id="right-hover-zone"></div>
 
-        <!-- Universal Sidebar -->
+        <!-- Universal Sidebar bounded cleanly above the bottom menu bar -->
         <aside class="sidebar" id="sidebar">
           <div class="sidebar-header" id="channelCount">Channels</div>
           <div class="channel-list" id="channelList"></div>
@@ -980,11 +994,11 @@
       const totalHeaders = channelListEl.querySelectorAll('.country-header').length;
 
       if (totalItems > 0 && containerHeight > 0) {
-        const headerSpace = totalHeaders * 16;
+        const headerSpace = totalHeaders * 17;
         const gapSpace = (totalItems + totalHeaders) * 1;
-        const availableForItems = Math.max(containerHeight - headerSpace - gapSpace - 4, 80);
+        const availableForItems = Math.max(containerHeight - headerSpace - gapSpace - 4, 60);
         const calculatedRowH = Math.floor(availableForItems / totalItems);
-        const clampedH = Math.min(Math.max(calculatedRowH, 20), 38);
+        const clampedH = Math.min(Math.max(calculatedRowH, 18), 34);
         document.documentElement.style.setProperty('--row-h', `${clampedH}px`);
       }
     }
@@ -1020,7 +1034,7 @@
             item.title = `${ch.name} (${ch.group})`;
             item.innerHTML = `
               <div class="ch-logo-wrap">
-                <img src="${ch.logo}" alt="${ch.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\'%3E%3Cpath fill=\\'%23888\\' d=\\'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z\\'/%3E%3C/svg%3E'">
+                <img src="${ch.logo}" alt="${ch.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\'%3E%3Cpath fill=\\'%23888\\' d=\\'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z\\'/%3E%3C/svg%3E'">
               </div>
               <div class="ch-info">
                 <div class="ch-name">${ch.name}</div>
