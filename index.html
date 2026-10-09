@@ -22,7 +22,8 @@
       --header-h: 40px;
       --bar-hint-h: 22px;
       --np-bar-h: 44px;
-      --row-h: 24px;
+      --row-h: 26px;
+      --sidebar-w: 320px;
     }
 
     * {
@@ -146,21 +147,15 @@
     .stage {
       flex: 1 1 0%;
       min-height: 0;
-      display: grid;
-      grid-template-columns: 1fr 320px;
+      position: relative;
       overflow: hidden;
-    }
-
-    @media (max-width: 992px) {
-      .stage {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr auto;
-      }
+      display: flex;
     }
 
     .player-section {
       display: flex;
       flex-direction: column;
+      width: 100%;
       height: 100%;
       min-height: 0;
       background: #000;
@@ -219,7 +214,8 @@
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
-      z-index: 40;
+      z-index: 25;
+      transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
     .player-section:fullscreen .video-viewport,
@@ -242,7 +238,6 @@
       transform: translateY(100%);
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
     .player-section:fullscreen .now-playing-bar.reveal-bar,
@@ -339,28 +334,44 @@
       pointer-events: none;
     }
 
+    #right-hover-zone {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30vw;
+      height: 100%;
+      z-index: 60;
+      pointer-events: auto;
+    }
+
     .sidebar {
-      background-color: var(--bg-surface);
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: var(--sidebar-w);
+      height: 100%;
+      min-height: 0;
+      background-color: rgba(17, 20, 29, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-left: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      height: 100%;
-      min-height: 0;
-      overflow: hidden;
+      z-index: 70;
+      transform: translateX(100%);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+      box-shadow: -6px 0 28px rgba(0, 0, 0, 0.65);
     }
 
-    @media (max-width: 992px) {
-      .sidebar {
-        border-left: none;
-        border-top: 1px solid var(--border);
-        max-height: 45vh;
-      }
+    .sidebar.visible,
+    .sidebar:hover {
+      transform: translateX(0);
     }
 
     .sidebar-header {
-      height: 24px;
-      padding: 0 8px;
-      font-size: 0.68rem;
+      height: 28px;
+      padding: 0 10px;
+      font-size: 0.7rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -385,7 +396,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      padding: 0 5px;
+      padding: 0 6px;
       font-size: 0.64rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -394,7 +405,7 @@
       background: rgba(255, 255, 255, 0.04);
       border-radius: 3px;
       flex-shrink: 0;
-      height: 15px;
+      height: 16px;
       line-height: 1;
     }
 
@@ -411,14 +422,14 @@
     .channel-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 0 6px;
-      border-radius: 3px;
+      gap: 8px;
+      padding: 0 8px;
+      border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.1s ease;
       border: 1px solid transparent;
       height: var(--row-h);
-      min-height: 19px;
+      min-height: 20px;
       flex: 1 1 0%;
       line-height: 1;
     }
@@ -430,12 +441,12 @@
     .channel-item.active {
       background-color: var(--bg-card);
       border-color: var(--accent);
-      box-shadow: inset 2px 0 0 var(--accent);
+      box-shadow: inset 2.5px 0 0 var(--accent);
     }
 
     .ch-logo-wrap {
       height: 75%;
-      max-height: 18px;
+      max-height: 20px;
       aspect-ratio: 4 / 3;
       border-radius: 2px;
       background: #fff;
@@ -460,12 +471,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 6px;
       pointer-events: none;
     }
 
     .ch-name {
-      font-size: 0.74rem;
+      font-size: 0.78rem;
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
@@ -473,7 +484,7 @@
     }
 
     .ch-tag {
-      font-size: 0.62rem;
+      font-size: 0.64rem;
       color: var(--text-muted);
       flex-shrink: 0;
       opacity: 0.8;
@@ -554,62 +565,6 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-    }
-
-    #fs-drawer {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: min(320px, 85vw);
-      height: 100%;
-      background: rgba(15, 17, 23, 0.96);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-left: 1px solid rgba(255, 255, 255, 0.15);
-      pointer-events: auto;
-      transform: translateX(100%);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      z-index: 60;
-    }
-
-    #fs-drawer.open {
-      transform: translateX(0);
-    }
-
-    .fs-drawer-header {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .fs-drawer-header h3 {
-      font-size: 0.88rem;
-      font-weight: 700;
-    }
-
-    .fs-close-btn {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      font-size: 1.4rem;
-      cursor: pointer;
-      line-height: 1;
-      padding: 2px 4px;
-    }
-
-    .fs-drawer-list {
-      flex: 1 1 0%;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      overflow-y: hidden;
-      padding: 4px 6px;
-      gap: 1px;
     }
   </style>
 </head>
@@ -696,7 +651,7 @@
         AFL TV
       </div>
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search channels (Esc to unfocus)..." autofocus autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Search channels (Esc to unfocus)..." autocomplete="off">
       </div>
     </header>
 
@@ -705,7 +660,7 @@
       <span><kbd>◀</kbd>/<kbd>▶</kbd> Prev/Next</span>
       <span><kbd>▲</kbd>/<kbd>▼</kbd> Vol</span>
       <span><kbd>M</kbd> Mute</span>
-      <span><kbd>Space</kbd> Fullscreen</span>
+      <span><kbd>Space</kbd> Fullscreen / Start</span>
       <span><kbd>E</kbd> 🇬🇧/🇺🇸 EN</span>
       <span><kbd>F</kbd> 🇫🇷 FR</span>
       <span><kbd>S</kbd> 🇪🇸 ES</span>
@@ -717,13 +672,13 @@
       <span><kbd>Esc</kbd> Back</span>
     </div>
 
-    <div class="stage">
+    <div class="stage" id="stageContainer">
       <section class="player-section" id="playerContainer">
         <div class="video-viewport" id="viewport">
           <video id="videoPlayer" controls autoplay muted playsinline webkit-playsinline></video>
 
           <div id="fullscreen-gate">
-            <div class="btn">Tap to Start / Fullscreen [Space]</div>
+            <div class="btn">Tap or Press [Space] to Start / Fullscreen / Unmute</div>
           </div>
 
           <div id="fs-osd-container">
@@ -742,14 +697,6 @@
                 <button class="fs-hud-btn" id="fsOpenDrawerBtn">☰ Channels <span class="btn-kbd">C</span></button>
                 <button class="fs-hud-btn" id="fsExitBtn">✕ Exit <span class="btn-kbd">Space</span></button>
               </div>
-            </div>
-
-            <div id="fs-drawer">
-              <div class="fs-drawer-header">
-                <h3>Select Channel</h3>
-                <button class="fs-close-btn" id="fsCloseDrawerBtn">&times;</button>
-              </div>
-              <div class="fs-drawer-list" id="fsDrawerList"></div>
             </div>
           </div>
         </div>
@@ -772,28 +719,32 @@
             <button class="action-btn" id="fsToggleBtn">⛶ Fullscreen <span class="btn-kbd">Space</span></button>
           </div>
         </div>
-      </section>
 
-      <aside class="sidebar">
-        <div class="sidebar-header" id="channelCount">Channels</div>
-        <div class="channel-list" id="channelList"></div>
-      </aside>
+        <!-- 30% Width Hover Trigger Zone inside player container (active in normal & fullscreen) -->
+        <div id="right-hover-zone"></div>
+
+        <!-- Universal Sidebar -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header" id="channelCount">Channels</div>
+          <div class="channel-list" id="channelList"></div>
+        </aside>
+      </section>
     </div>
   </div>
 
   <script>
     const COUNTRY_META = {
-      EN: { name: "English (US / UK)", flagId: "#flag-en" },
-      FR: { name: "France", flagId: "#flag-fr" },
-      ES: { name: "Spain", flagId: "#flag-es" },
-      DE: { name: "Germany", flagId: "#flag-de" },
-      LU: { name: "Luxembourg", flagId: "#flag-lu" },
-      IT: { name: "Italy", flagId: "#flag-it" },
-      TR: { name: "Türkiye", flagId: "#flag-tr" }
+      EN: { name: "", flagId: "#flag-en" },
+      FR: { name: "", flagId: "#flag-fr" },
+      ES: { name: "", flagId: "#flag-es" },
+      DE: { name: "", flagId: "#flag-de" },
+      LU: { name: "", flagId: "#flag-lu" },
+      IT: { name: "", flagId: "#flag-it" },
+      TR: { name: "", flagId: "#flag-tr" }
     };
 
     const CHANNELS = [
-      // English
+      // English (1080p)
       { 
         country: "EN", 
         id: "BloombergTV.us@Plus", 
@@ -811,7 +762,7 @@
         url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8" 
       },
 
-      // France
+      // France (1080p)
       { 
         country: "FR", 
         id: "BFMTV.fr", 
@@ -844,8 +795,16 @@
         logo: "https://alloforfait.fr/wp-content/uploads/2024/03/logo-bfm2-300x200.jpg", 
         url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" 
       },
+      { 
+        country: "FR", 
+        id: "TV5MondeFBS.fr", 
+        name: "TV5Monde (FBS) (1080p)", 
+        group: "General", 
+        logo: "https://i.imgur.com/WmRbudc.png", 
+        url: "https://ott.tv5monde.com/Content/HLS/Live/channel(fbs)/variant.m3u8" 
+      },
 
-      // Spain
+      // Spain (1080p)
       { 
         country: "ES", 
         id: "NegociosTV.es", 
@@ -855,7 +814,7 @@
         url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" 
       },
 
-      // Germany
+      // Germany (1080p)
       { 
         country: "DE", 
         id: "DasErste.de", 
@@ -888,16 +847,8 @@
         logo: "https://i.imgur.com/zZOk3nh.png", 
         url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" 
       },
-      { 
-        country: "DE", 
-        id: "VOX.de", 
-        name: "VOX", 
-        group: "General", 
-        logo: "https://i.imgur.com/QPcmfZb.png", 
-        url: "https://dash4.antik.sk/live/test_vox_tizen/playlist.m3u8" 
-      },
 
-      // Luxembourg
+      // Luxembourg (1080p)
       { 
         country: "LU", 
         id: "RTLTeleLetzebuerg1.lu", 
@@ -915,7 +866,7 @@
         url: "https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8" 
       },
 
-      // Italy
+      // Italy (1080p)
       { 
         country: "IT", 
         id: "RaiUno.it", 
@@ -933,7 +884,7 @@
         url: "https://dash2.antik.sk/live/test_rai_tre_tizen/playlist.m3u8" 
       },
 
-      // Türkiye
+      // Türkiye (1080p - 1440p)
       { 
         country: "TR", 
         id: "TRT1.tr", 
@@ -953,7 +904,7 @@
       { 
         country: "TR", 
         id: "CNBCe.tr", 
-        name: "CNBC-e", 
+        name: "CNBC-e (1080p)", 
         group: "Business;Series", 
         logo: "https://s.cnbce.com/dist/images/logo-nav.png", 
         url: "https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8" 
@@ -961,7 +912,7 @@
       { 
         country: "TR", 
         id: "FlashHaberTV.tr", 
-        name: "Flash Haber TV", 
+        name: "Flash Haber TV (1080p)", 
         group: "News", 
         logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z'/%3E%3C/svg%3E", 
         url: "https://b01c02nl.mediatriple.net/videoonlylive/mtyycglqauzjhlive/broadcast_67c053c48829f.smil/playlist.m3u8" 
@@ -969,7 +920,7 @@
       { 
         country: "TR", 
         id: "HalkTV.tr", 
-        name: "Halk TV SD (1080p)", 
+        name: "Halk TV (1080p)", 
         group: "News", 
         logo: "https://i.imgur.com/xM0HA30.png", 
         url: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" 
@@ -981,8 +932,9 @@
     const playerContainer = document.getElementById('playerContainer');
     const gate = document.getElementById('fullscreen-gate');
     const nowPlayingBar = document.getElementById('nowPlayingBar');
+    const sidebar = document.getElementById('sidebar');
+    const rightHoverZone = document.getElementById('right-hover-zone');
     const channelListEl = document.getElementById('channelList');
-    const fsDrawerListEl = document.getElementById('fsDrawerList');
     const searchInput = document.getElementById('searchInput');
     const fsToggleBtn = document.getElementById('fsToggleBtn');
     const prevChBtn = document.getElementById('prevChBtn');
@@ -996,19 +948,18 @@
     const channelCount = document.getElementById('channelCount');
 
     const fsOsd = document.getElementById('fs-osd-container');
-    const fsDrawer = document.getElementById('fs-drawer');
     const fsTitle = document.getElementById('fsTitle');
     const fsCategory = document.getElementById('fsCategory');
     const fsFlag = document.getElementById('fsFlag');
     const fsLogo = document.getElementById('fsLogo');
     const fsOpenDrawerBtn = document.getElementById('fsOpenDrawerBtn');
-    const fsCloseDrawerBtn = document.getElementById('fsCloseDrawerBtn');
     const fsExitBtn = document.getElementById('fsExitBtn');
 
     let currentHls = null;
     let activeIndex = 0;
     let osdTimeout = null;
     let cursorTimeout = null;
+    let sidebarHideTimeout = null;
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -1029,18 +980,17 @@
       const totalHeaders = channelListEl.querySelectorAll('.country-header').length;
 
       if (totalItems > 0 && containerHeight > 0) {
-        const headerSpace = totalHeaders * 15;
+        const headerSpace = totalHeaders * 16;
         const gapSpace = (totalItems + totalHeaders) * 1;
-        const availableForItems = Math.max(containerHeight - headerSpace - gapSpace - 4, 60);
+        const availableForItems = Math.max(containerHeight - headerSpace - gapSpace - 4, 80);
         const calculatedRowH = Math.floor(availableForItems / totalItems);
-        const clampedH = Math.min(Math.max(calculatedRowH, 19), 32);
+        const clampedH = Math.min(Math.max(calculatedRowH, 20), 38);
         document.documentElement.style.setProperty('--row-h', `${clampedH}px`);
       }
     }
 
     function renderChannels(filterText = '') {
       channelListEl.innerHTML = '';
-      fsDrawerListEl.innerHTML = '';
       const filter = filterText.toLowerCase();
       let totalMatched = 0;
 
@@ -1058,42 +1008,31 @@
         if (matched.length > 0) {
           totalMatched += matched.length;
 
-          const createHeader = () => {
-            const h = document.createElement('div');
-            h.className = 'country-header';
-            h.innerHTML = `<svg class="flag-icon"><use href="${meta.flagId}"/></svg><span>${meta.name}</span>`;
-            return h;
-          };
-          channelListEl.appendChild(createHeader());
-          fsDrawerListEl.appendChild(createHeader());
+          const h = document.createElement('div');
+          h.className = 'country-header';
+          h.innerHTML = `<svg class="flag-icon"><use href="${meta.flagId}"/></svg><span>${meta.name}</span>`;
+          channelListEl.appendChild(h);
 
           matched.forEach(ch => {
-            const createItem = (isDrawer = false) => {
-              const item = document.createElement('div');
-              item.className = `channel-item ${ch.originalIndex === activeIndex ? 'active' : ''}`;
-              item.setAttribute('data-index', ch.originalIndex);
-              item.title = `${ch.name} (${ch.group})`;
-              item.innerHTML = `
-                <div class="ch-logo-wrap">
-                  <img src="${ch.logo}" alt="${ch.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\'%3E%3Cpath fill=\\'%23888\\' d=\\'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z\\'/%3E%3C/svg%3E'">
-                </div>
-                <div class="ch-info">
-                  <div class="ch-name">${ch.name}</div>
-                  <div class="ch-tag">${ch.group.split(';')[0]}</div>
-                </div>
-              `;
-              item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                loadChannel(ch.originalIndex);
-                if (isDrawer) {
-                  closeFsDrawer();
-                }
-              });
-              return item;
-            };
-
-            channelListEl.appendChild(createItem(false));
-            fsDrawerListEl.appendChild(createItem(true));
+            const item = document.createElement('div');
+            item.className = `channel-item ${ch.originalIndex === activeIndex ? 'active' : ''}`;
+            item.setAttribute('data-index', ch.originalIndex);
+            item.title = `${ch.name} (${ch.group})`;
+            item.innerHTML = `
+              <div class="ch-logo-wrap">
+                <img src="${ch.logo}" alt="${ch.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\'%3E%3Cpath fill=\\'%23888\\' d=\\'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z\\'/%3E%3C/svg%3E'">
+              </div>
+              <div class="ch-info">
+                <div class="ch-name">${ch.name}</div>
+                <div class="ch-tag">${ch.group.split(';')[0]}</div>
+              </div>
+            `;
+            item.addEventListener('click', (e) => {
+              e.stopPropagation();
+              loadChannel(ch.originalIndex);
+              sidebar.classList.remove('visible');
+            });
+            channelListEl.appendChild(item);
           });
         }
       });
@@ -1198,27 +1137,46 @@
       }
     }
 
-    function handleFullscreenMouseMove(e) {
-      if (!isFullscreen()) return;
+    function handleMouseMove(e) {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
 
       playerContainer.classList.remove('hide-cursor');
       clearTimeout(cursorTimeout);
       cursorTimeout = setTimeout(() => {
-        if (!fsDrawer.classList.contains('open')) {
+        if (!sidebar.classList.contains('visible')) {
           playerContainer.classList.add('hide-cursor');
         }
       }, 2500);
 
-      const windowHeight = window.innerHeight;
-      const isNearBottom = e.clientY >= (windowHeight - 75);
-
-      if (isNearBottom || nowPlayingBar.matches(':hover')) {
-        nowPlayingBar.classList.add('reveal-bar');
+      const isWithinRight30Percent = e.clientX >= (windowWidth * 0.70);
+      if (isWithinRight30Percent || sidebar.matches(':hover')) {
+        showSidebar();
       } else {
-        nowPlayingBar.classList.remove('reveal-bar');
+        hideSidebar();
+      }
+
+      if (isFullscreen()) {
+        const isNearBottom = e.clientY >= (windowHeight - 70);
+        if (isNearBottom || nowPlayingBar.matches(':hover')) {
+          nowPlayingBar.classList.add('reveal-bar');
+        } else {
+          nowPlayingBar.classList.remove('reveal-bar');
+        }
       }
 
       showOsdBriefly();
+    }
+
+    function showSidebar() {
+      clearTimeout(sidebarHideTimeout);
+      sidebar.classList.add('visible');
+    }
+
+    function hideSidebar() {
+      sidebarHideTimeout = setTimeout(() => {
+        sidebar.classList.remove('visible');
+      }, 200);
     }
 
     function showOsdBriefly() {
@@ -1226,22 +1184,10 @@
       fsOsd.classList.add('visible');
       clearTimeout(osdTimeout);
       osdTimeout = setTimeout(() => {
-        if (!fsDrawer.classList.contains('open')) {
+        if (!sidebar.classList.contains('visible')) {
           fsOsd.classList.remove('visible');
         }
       }, 2500);
-    }
-
-    function openFsDrawer() {
-      fsDrawer.classList.add('open');
-      fsOsd.classList.add('visible');
-      clearTimeout(osdTimeout);
-      playerContainer.classList.remove('hide-cursor');
-    }
-
-    function closeFsDrawer() {
-      fsDrawer.classList.remove('open');
-      showOsdBriefly();
     }
 
     function jumpToFirstCountry(countryCode) {
@@ -1255,12 +1201,12 @@
     }
 
     viewport.addEventListener('click', (e) => {
-      if (e.target.closest('#fullscreen-gate') || e.target.closest('#fs-drawer') || e.target.closest('.fs-top-hud') || e.target.closest('#nowPlayingBar')) {
+      if (e.target.closest('#fullscreen-gate') || e.target.closest('#sidebar') || e.target.closest('.fs-top-hud') || e.target.closest('#nowPlayingBar')) {
         return;
       }
       if (isFullscreen()) {
-        if (fsDrawer.classList.contains('open')) {
-          closeFsDrawer();
+        if (sidebar.classList.contains('visible')) {
+          sidebar.classList.remove('visible');
           return;
         }
         if (fsOsd.classList.contains('visible')) {
@@ -1271,14 +1217,16 @@
       }
     });
 
-    playerContainer.addEventListener('mousemove', handleFullscreenMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    sidebar.addEventListener('mouseenter', showSidebar);
+    sidebar.addEventListener('mouseleave', hideSidebar);
 
     document.addEventListener('fullscreenchange', () => {
       if (!isFullscreen()) {
         nowPlayingBar.classList.remove('reveal-bar');
         playerContainer.classList.remove('hide-cursor');
         fsOsd.classList.remove('visible');
-        fsDrawer.classList.remove('open');
       }
       setTimeout(adjustChannelRowSizes, 100);
     });
@@ -1293,8 +1241,8 @@
           searchInput.blur();
           return;
         }
-        if (fsDrawer.classList.contains('open')) {
-          closeFsDrawer();
+        if (sidebar.classList.contains('visible')) {
+          sidebar.classList.remove('visible');
           return;
         }
         if (isFullscreen()) {
@@ -1315,6 +1263,16 @@
         return;
       }
 
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (gate.style.display !== 'none') {
+          gate.click();
+        } else {
+          toggleFullscreen();
+        }
+        return;
+      }
+
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         loadChannel(activeIndex - 1);
@@ -1330,15 +1288,10 @@
         e.preventDefault();
         video.volume = Math.max(0, Number((video.volume - 0.05).toFixed(2)));
         showOsdBriefly();
-      } else if (e.code === 'Space') {
-        e.preventDefault();
-        toggleFullscreen();
       } else if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
         toggleMute();
-      } 
-      // Ordered shortcuts
-      else if (e.key === 'e' || e.key === 'E') {
+      } else if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();
         jumpToFirstCountry('EN');
       } else if (e.key === 'f' || e.key === 'F') {
@@ -1361,9 +1314,7 @@
         jumpToFirstCountry('TR');
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        if (isFullscreen()) {
-          fsDrawer.classList.contains('open') ? closeFsDrawer() : openFsDrawer();
-        }
+        sidebar.classList.toggle('visible');
       }
     });
 
@@ -1378,19 +1329,15 @@
     muteToggleBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMute(); });
     prevChBtn.addEventListener('click', (e) => { e.stopPropagation(); loadChannel(activeIndex - 1); });
     nextChBtn.addEventListener('click', (e) => { e.stopPropagation(); loadChannel(activeIndex + 1); });
-    fsOpenDrawerBtn.addEventListener('click', (e) => { e.stopPropagation(); openFsDrawer(); });
-    fsCloseDrawerBtn.addEventListener('click', (e) => { e.stopPropagation(); closeFsDrawer(); });
+    fsOpenDrawerBtn.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('visible'); });
     fsExitBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFullscreen(); });
 
-    fsDrawer.addEventListener('click', (e) => e.stopPropagation());
+    sidebar.addEventListener('click', (e) => e.stopPropagation());
     searchInput.addEventListener('input', (e) => renderChannels(e.target.value));
 
     renderChannels();
     loadChannel(0);
-    setTimeout(() => {
-      searchInput.focus();
-      adjustChannelRowSizes();
-    }, 150);
+    setTimeout(adjustChannelRowSizes, 150);
   </script>
 </body>
 </html>
