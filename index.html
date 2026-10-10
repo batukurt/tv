@@ -842,10 +842,9 @@
 
       // Germany
       { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://daserste-live.ard-mcdn.de/daserste/live/hls/int/master.m3u8" },
-      { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
-      { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
       { country: "DE", id: "ProSieben.de", name: "ProSieben", group: "General", logo: LOGOS.prosieben, url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" },
-
+      { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
+      { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
       // Luxembourg
       { country: "LU", id: "RTLTeleLetzebuerg1.lu", name: "RTL Télé Lëtzebuerg 1", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8" },
       { country: "LU", id: "RTLTeleLetzebuerg2.lu", name: "RTL Télé Lëtzebuerg 2", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8" },
@@ -856,27 +855,42 @@
       { country: "IT", id: "RaiTre.it", name: "Rai 3", group: "General", logo: LOGOS.rai3, url: "https://dash2.antik.sk/live/test_rai_tre_tizen/playlist.m3u8" },
 
       // Türkiye
+      { country: "TR", id: "BloombergHT.tr", name: "Bloomberg HT", group: "Business;News", logo: LOGOS.bloomberght, url: "https://tv.ensonhaber.com/bloomberght/bloomberght.m3u8" },
+      { country: "TR", id: "CNBCe.tr", name: "CNBC-e", group: "Business;Series", logo: LOGOS.cnbce, url: "https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8" },
       { country: "TR", id: "TRT1.tr", name: "TRT 1", group: "General", logo: LOGOS.trt1, url: "https://tv-trt1.medya.trt.com.tr/master.m3u8" },
       { country: "TR", id: "ATV.tr", name: "ATV (Turkiye)", group: "General", logo: LOGOS.atv, url: "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/atv/atv_1080p.m3u8" },
       { country: "TR", id: "KanalD.tr", name: "Kanal D", group: "General", logo: LOGOS.kanald, url: "https://demiroren.daioncdn.net/kanald/kanald.m3u8?app=kanald_web&ce=3" },
-      { country: "TR", id: "NTV.tr", name: "NTV", group: "News", logo: LOGOS.ntv, url: "https://dogus.daioncdn.net/ntv/ntv.m3u8?app=ntv_web" },
       { country: "TR", id: "Haberturk.tr", name: "Habertürk", group: "News", logo: LOGOS.haberturk, url: "https://tv.ensonhaber.com/haberturk/haberturk.m3u8" },
-      { country: "TR", id: "BloombergHT.tr", name: "Bloomberg HT", group: "Business;News", logo: LOGOS.bloomberght, url: "https://tv.ensonhaber.com/bloomberght/bloomberght.m3u8" },
-      { country: "TR", id: "CNBCe.tr", name: "CNBC-e", group: "Business;Series", logo: LOGOS.cnbce, url: "https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8" },
+      { country: "TR", id: "HalkTV.tr", name: "Halk TV", group: "News", logo: LOGOS.halktv, url: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" },
+      { country: "TR", id: "NTV.tr", name: "NTV", group: "News", logo: LOGOS.ntv, url: "https://dogus.daioncdn.net/ntv/ntv.m3u8?app=ntv_web" },
       { country: "TR", id: "TGRTHaber.tr", name: "TGRT Haber", group: "News", logo: LOGOS.tgrt, url: "https://canli.tgrthaber.com/tgrt.m3u8" },
       { country: "TR", id: "Tele1.tr", name: "Tele 1", group: "News", logo: LOGOS.tele1, url: "https://tele1-live.ercdn.net/tele1/tele1.m3u8" },
-      { country: "TR", id: "HalkTV.tr", name: "Halk TV", group: "News", logo: LOGOS.halktv, url: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" },
 
-      // Bottom Special Channel (Trace Urban Hits, Kardiosis Logo, Auto-Skipped on Browse)
+      // Bottom Special Channels
+      { 
+        country: "SPECIAL", 
+        id: "AksamSefasi.special", 
+        name: "Akşam Sefası", 
+        group: "Music & Special", 
+        logo: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%236b21a8'/%3E%3Ctext x='50' y='18' fill='%23fef08a' font-family='sans-serif' font-weight='bold' font-size='11' text-anchor='middle'%3EAKŞAM%3C/text%3E%3Ctext x='50' y='32' fill='%23ffffff' font-family='sans-serif' font-weight='900' font-size='12' letter-spacing='1' text-anchor='middle'%3ESEFASI%3C/text%3E%3C/svg%3E`, 
+        url: "https://tv-trtmuzik.medya.trt.com.tr/master.m3u8", 
+      },
       { 
         country: "SPECIAL", 
         id: "AFLSakSakTV.special", 
-        name: "AFL ŞakŞak TV", 
+        name: "ŞakŞak TV", 
         group: "Music & Special", 
         logo: LOGOS.kardiosis, 
-        url: "https://channels.trace.plus/Traceprod/URBAN_INTER_hd/index.m3u8", 
-        skipOnBrowse: true 
-      }
+        url: "https://channels.trace.plus/Traceprod/URBAN_INTER_hd/index.m3u8",  
+      },
+	{
+  	country: "SPECIAL",
+  	id: "GrjngoWestern.us",
+  	name: "Pazar Neşesi",
+  	group: "Movies",
+  	logo: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%235c2414'/%3E%3Ctext x='50' y='26' fill='%23f1a323' font-family='serif' font-weight='900' font-size='15' text-anchor='middle'%3EGRJNGO%3C/text%3E%3C/svg%3E`,
+  	url: "https://amogonetworx-grjngo-1-eu.plex.wurl.tv/playlist.m3u8",
+},
     ];
 
     const video = document.getElementById('videoPlayer');
