@@ -52,7 +52,7 @@
       position: relative;
     }
 
-    /* Single Unified Top Header */
+    /* Top Bar Default Desktop */
     .unified-top-bar {
       height: var(--bar-h);
       background-color: var(--bg-surface);
@@ -67,24 +67,31 @@
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
-    /* Fullscreen Auto-hide (reveals near top edge) */
-    #app:fullscreen .unified-top-bar,
-    #app:-webkit-full-screen .unified-top-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(20, 23, 33, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transform: translateY(-100%);
-      opacity: 0;
+    /* Desktop Fullscreen Auto-hide */
+    @media (min-width: 901px) {
+      #app:fullscreen .unified-top-bar,
+      #app:-webkit-full-screen .unified-top-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(20, 23, 33, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      #app:fullscreen .unified-top-bar.reveal-top,
+      #app:-webkit-full-screen .unified-top-bar.reveal-top {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
-    #app:fullscreen .unified-top-bar.reveal-top,
-    #app:-webkit-full-screen .unified-top-bar.reveal-top {
-      transform: translateY(0);
-      opacity: 1;
+    .top-row-1 {
+      display: flex;
+      align-items: center;
     }
 
     .brand-signal {
@@ -318,7 +325,7 @@
       cursor: none;
     }
 
-    /* Channels Sidebar (Default Windowed: In-flow right panel strictly within stage) */
+    /* Channels Sidebar (Default Windowed: Right Panel) */
     .sidebar {
       position: static !important;
       flex: 1 1 0% !important;
@@ -336,52 +343,54 @@
       pointer-events: auto !important;
     }
 
-    /* Fullscreen: Video expands & centers, Sidebar becomes floating overlay drawer */
-    #app:fullscreen .stage,
-    #app:-webkit-full-screen .stage {
-      display: flex;
-      flex-direction: column;
-    }
+    /* Desktop Fullscreen Only: Video centers, Sidebar becomes drawer */
+    @media (min-width: 901px) {
+      #app:fullscreen .stage,
+      #app:-webkit-full-screen .stage {
+        display: flex;
+        flex-direction: column;
+      }
 
-    #app:fullscreen .player-section,
-    #app:-webkit-full-screen .player-section {
-      width: 100% !important;
-      height: 100% !important;
-      flex: 1 1 100% !important;
-    }
+      #app:fullscreen .player-section,
+      #app:-webkit-full-screen .player-section {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1 1 100% !important;
+      }
 
-    #app:fullscreen .video-viewport,
-    #app:-webkit-full-screen .video-viewport {
-      width: 100% !important;
-      height: 100% !important;
-      justify-content: center !important;
-    }
+      #app:fullscreen .video-viewport,
+      #app:-webkit-full-screen .video-viewport {
+        width: 100% !important;
+        height: 100% !important;
+        justify-content: center !important;
+      }
 
-    #app:fullscreen .video-ratio-box,
-    #app:-webkit-full-screen .video-ratio-box {
-      max-width: 100% !important;
-      max-height: 100% !important;
-    }
+      #app:fullscreen .video-ratio-box,
+      #app:-webkit-full-screen .video-ratio-box {
+        max-width: 100% !important;
+        max-height: 100% !important;
+      }
 
-    #app:fullscreen .sidebar,
-    #app:-webkit-full-screen .sidebar {
-      position: absolute !important;
-      top: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: var(--sidebar-w) !important;
-      flex: 0 0 auto !important;
-      height: 100% !important;
-      transform: translateX(100%) !important;
-      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
-      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.7) !important;
-      pointer-events: none !important;
-    }
+      #app:fullscreen .sidebar,
+      #app:-webkit-full-screen .sidebar {
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: var(--sidebar-w) !important;
+        flex: 0 0 auto !important;
+        height: 100% !important;
+        transform: translateX(100%) !important;
+        transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+        box-shadow: -8px 0 28px rgba(0, 0, 0, 0.7) !important;
+        pointer-events: none !important;
+      }
 
-    #app:fullscreen .sidebar.visible,
-    #app:-webkit-full-screen .sidebar.visible {
-      transform: translateX(0) !important;
-      pointer-events: auto !important;
+      #app:fullscreen .sidebar.visible,
+      #app:-webkit-full-screen .sidebar.visible {
+        transform: translateX(0) !important;
+        pointer-events: auto !important;
+      }
     }
 
     .sidebar-header {
@@ -523,10 +532,114 @@
       opacity: 1;
     }
 
-    /* Mobile Landscape: Video leftmost full height, channel list occupies remaining right space */
-    @media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (max-width: 950px) {
+    /* =========================================================
+       MOBILE SPECIFIC LAYOUTS
+       ========================================================= */
+
+    /* 1. MOBILE PORTRAIT MODE:
+       - Video pinned right at top (no bars above it)
+       - Top bar in 2 rows placed right below video
+       - Channel list occupies remaining bottom space with all channels visible
+    */
+    @media (orientation: portrait) and (max-width: 900px) {
+      #app {
+        flex-direction: column !important;
+      }
+
+      .stage {
+        flex-direction: column !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .player-section {
+        order: 1 !important;
+        width: 100% !important;
+        height: auto !important;
+        flex: 0 0 auto !important;
+      }
+
+      .video-viewport {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      .video-ratio-box {
+        width: 100% !important;
+        height: auto !important;
+        max-height: calc(100vw * (9 / 16)) !important;
+        aspect-ratio: 16 / 9 !important;
+      }
+
       .unified-top-bar {
-        display: none !important;
+        order: 2 !important;
+        position: static !important;
+        transform: none !important;
+        opacity: 1 !important;
+        height: auto !important;
+        padding: 4px 6px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .top-row-1 {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .top-row-2 {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .top-controls {
+        gap: 3px;
+        flex-wrap: nowrap;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .top-controls .action-btn {
+        height: 26px;
+        padding: 0 5px;
+        font-size: 0.65rem;
+      }
+
+      .top-controls .vol-group {
+        padding: 1px 3px;
+      }
+
+      .sidebar {
+        order: 3 !important;
+        border-left: none !important;
+        width: 100% !important;
+        flex: 1 1 0% !important;
+        height: auto !important;
+      }
+
+      .sidebar-header {
+        height: 18px;
+        padding: 0 6px;
+        font-size: 0.58rem;
+      }
+    }
+
+    /* 2. MOBILE LANDSCAPE (Windowed & Fullscreen Unified):
+       - Full height 16:9 video pinned leftmost
+       - Next is the topbar controls arranged in two vertical columns
+       - Next is the channel list using all remaining right space
+       - Zero scrolling: all channels visible
+    */
+    @media (orientation: landscape) and (max-height: 600px), (orientation: landscape) and (max-width: 950px) {
+      #app {
+        flex-direction: row !important;
       }
 
       .stage {
@@ -550,12 +663,67 @@
       .video-ratio-box {
         height: 100% !important;
         width: calc(100vh * (16 / 9)) !important;
-        max-width: calc(100vw - 180px) !important;
+        max-width: calc(100vw - 220px) !important;
         aspect-ratio: 16 / 9 !important;
       }
 
+      /* Topbar rendered as two compact vertical columns */
+      .unified-top-bar {
+        position: static !important;
+        transform: none !important;
+        opacity: 1 !important;
+        width: 110px !important;
+        height: 100% !important;
+        padding: 4px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        border-bottom: none !important;
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+      }
+
+      .top-row-1 {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .np-title {
+        max-width: 90px;
+        font-size: 0.70rem;
+      }
+
+      .top-row-2 {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-controls {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr; /* Two clean columns */
+        gap: 4px !important;
+        width: 100% !important;
+      }
+
+      .top-controls .action-btn {
+        height: 26px !important;
+        padding: 0 2px !important;
+        font-size: 0.62rem !important;
+      }
+
+      .top-controls .vol-group {
+        grid-column: span 2;
+        width: 100%;
+        justify-content: space-around;
+        padding: 1px;
+      }
+
       .sidebar {
-        border-left: 1px solid var(--border);
+        border-left: none !important;
         flex: 1 1 0% !important;
         width: auto !important;
         height: 100% !important;
@@ -564,108 +732,9 @@
       .sidebar-header {
         display: none;
       }
-    }
 
-    /* Mobile Portrait: Top bar -> 16:9 Video -> Channel list occupies space below video */
-    @media (orientation: portrait) and (max-width: 768px) {
-      #app {
-        flex-direction: column !important;
-      }
-
-      .unified-top-bar {
-        height: auto !important;
-        min-height: 74px;
-        padding: 4px 6px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 4px !important;
-      }
-
-      .top-row-1 {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
-      }
-
-      .top-row-2 {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 4px;
-        overflow-x: auto;
-      }
-
-      .brand-signal {
-        gap: 6px;
-      }
-
-      .np-title {
-        max-width: 140px;
-        font-size: 0.74rem;
-      }
-
-      .top-controls {
-        gap: 3px;
-        flex-wrap: nowrap;
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .top-controls .action-btn {
-        height: 26px;
-        padding: 0 5px;
-        font-size: 0.65rem;
-      }
-
-      .top-controls .vol-group {
-        padding: 1px 3px;
-      }
-
-      .top-controls .vol-indicator {
-        min-width: 28px;
-        font-size: 0.65rem;
-      }
-
-      .stage {
-        flex-direction: column !important;
-        width: 100% !important;
-        flex: 1 1 0% !important;
-      }
-
-      .player-section {
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        height: auto !important;
-      }
-
-      .video-viewport {
-        width: 100% !important;
-        height: auto !important;
-        align-items: flex-start !important;
-      }
-
-      .video-ratio-box {
-        width: 100% !important;
-        height: auto !important;
-        max-height: calc(100vw * (9 / 16)) !important;
-        aspect-ratio: 16 / 9 !important;
-      }
-
-      .sidebar {
-        border-left: none !important;
-        border-top: 1px solid var(--border) !important;
-        width: 100% !important;
-        flex: 1 1 0% !important;
-        height: auto !important;
-      }
-
-      .sidebar-header {
-        height: 18px;
-        padding: 0 6px;
-        font-size: 0.58rem;
+      .channel-list {
+        padding: 2px 3px !important;
       }
     }
   </style>
@@ -809,7 +878,7 @@
           </div>
 
           <div id="fullscreen-gate">
-            <div class="btn">Press [Enter] or Tap Here to Unmute and Start in Fullscreen</div>
+            <div class="btn">Press [Enter] or Tap Here to Start in Fullscreen and Unmuted</div>
           </div>
 
           <div id="toastMessage" class="toast-msg"></div>
@@ -842,7 +911,6 @@
       bfm: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%230055a5'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EBFMTV%3C/text%3E%3C/svg%3E`,
       bfmbiz: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002244'/%3E%3Ctext x='50' y='26' fill='%2300aaff' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3EBFM BIZ%3C/text%3E%3C/svg%3E`,
       negocios: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23111'/%3E%3Ctext x='50' y='25' fill='%2300ff88' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3ENegocios%3C/text%3E%3C/svg%3E`,
-      daserste: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%2300305e'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ctext x='50' y='26' fill='%2300305e' font-family='sans-serif' font-weight='bold' font-size='17' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E`,
       zdf: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23fa7d19'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EZDF%3C/text%3E%3C/svg%3E`,
       wdr: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3EWDR%3C/text%3E%3C/svg%3E`,
       prosieben: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='22' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E`,
@@ -890,10 +958,10 @@
       { country: "EN", id: "CNBCUK.uk", name: "CNBC UK", group: "Business", logo: LOGOS.cnbc, url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8" },
 
       // France
-      { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
+      { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
       { country: "FR", id: "BFMBusiness.fr", name: "BFM Business", group: "Business", logo: LOGOS.bfmbiz, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTechCo.fr", name: "BFM Tech & Co", group: "Science", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TECHANDCO/index.m3u8?end=END&start=LIVE" },
-      { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
+      { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
       
       // Spain
       { country: "ES", id: "NegociosTV.es", name: "Negocios TV", group: "Business", logo: LOGOS.negocios, url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" },
