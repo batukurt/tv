@@ -67,7 +67,7 @@
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
-    /* Desktop Fullscreen Auto-hide (reveals near top edge) */
+    /* Desktop Fullscreen Auto-hide */
     @media (min-width: 900px) {
       #app:fullscreen .unified-top-bar,
       #app:-webkit-full-screen .unified-top-bar {
@@ -133,12 +133,12 @@
     }
 
     .np-title {
-      font-size: 0.80rem;
+      font-size: 0.82rem;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 130px;
+      max-width: 160px;
     }
 
     .np-category {
@@ -170,7 +170,7 @@
     .top-controls {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       flex-shrink: 0;
     }
 
@@ -203,7 +203,7 @@
       background-color: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 0 6px;
+      padding: 0 8px;
       height: 28px;
       border-radius: 5px;
       cursor: pointer;
@@ -241,29 +241,6 @@
       font-size: 0.60rem;
       font-weight: 600;
       pointer-events: none;
-    }
-
-    .search-box {
-      width: var(--sidebar-w);
-      flex-shrink: 0;
-    }
-
-    .search-box input {
-      width: 100%;
-      height: 26px;
-      padding: 0 8px;
-      border-radius: 5px;
-      border: 1px solid var(--border);
-      background-color: var(--bg-base);
-      color: var(--text);
-      font-size: 0.75rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .search-box input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-glow);
     }
 
     .stage {
@@ -345,7 +322,7 @@
       cursor: none;
     }
 
-    /* Channel Sidebar Default (Desktop drawer overlay) */
+    /* Channel Sidebar */
     .sidebar {
       position: absolute;
       top: var(--bar-h) !important;
@@ -515,59 +492,48 @@
        ========================================================= */
 
     /* 1. MOBILE LANDSCAPE MODE:
-       - Video pinned strictly to leftmost edge
-       - Remaining right area dedicated to the channel list
+       - Video pinned leftmost and uses full height
+       - Remainder on the right is dedicated to the channel list
     */
-    @media (max-height: 600px) and (orientation: landscape), (max-width: 950px) and (orientation: landscape) {
+    @media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (max-width: 950px) {
       .unified-top-bar {
-        position: static !important;
-        transform: none !important;
-        opacity: 1 !important;
-        height: 38px;
-        padding: 0 8px;
-      }
-
-      .top-controls .action-btn {
-        height: 24px;
-        padding: 0 4px;
-        font-size: 0.65rem;
-      }
-
-      .search-box {
-        width: 160px;
+        display: none !important;
       }
 
       .stage {
-        flex-direction: row;
-        width: 100%;
-        height: calc(100% - 38px);
+        flex-direction: row !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
       .player-section {
-        flex: 0 0 auto;
-        width: auto;
-        height: 100%;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        height: 100% !important;
       }
 
       .video-viewport {
-        width: auto;
-        height: 100%;
-        justify-content: flex-start; /* Pinned leftmost */
+        width: auto !important;
+        height: 100% !important;
+        justify-content: flex-start !important;
       }
 
       .video-ratio-box {
         height: 100% !important;
-        width: calc(100vh * (16 / 9) - (38px * 16 / 9)) !important;
-        max-width: calc(100vw - 180px);
+        width: calc(100vh * (16 / 9)) !important;
+        max-width: calc(100vw - 180px) !important;
+        aspect-ratio: 16 / 9 !important;
       }
 
       .sidebar {
         position: static !important;
+        top: 0 !important;
+        bottom: 0 !important;
         transform: none !important;
         pointer-events: auto !important;
         box-shadow: none !important;
         border-left: 1px solid var(--border);
-        flex: 1 1 0% !important; /* Uses whatever space is left on the right */
+        flex: 1 1 0% !important;
         width: auto !important;
         height: 100% !important;
       }
@@ -577,99 +543,127 @@
       }
 
       .channel-list {
-        overflow-y: hidden;
+        overflow-y: hidden !important;
       }
     }
 
     /* 2. MOBILE PORTRAIT MODE:
-       - Top bar always open at the top
+       - Top bar divided into clean rows
        - Video pinned right below top bar (16:9 fixed)
-       - Channel list occupies all remaining bottom height
+       - Channel list starts right below video, zero scroll
     */
-    @media (max-width: 768px) and (orientation: portrait) {
+    @media (orientation: portrait) and (max-width: 768px) {
       #app {
-        flex-direction: column;
+        flex-direction: column !important;
       }
 
       .unified-top-bar {
         position: static !important;
         transform: none !important;
         opacity: 1 !important;
-        height: 42px;
-        padding: 0 6px;
+        height: auto !important;
+        min-height: 74px;
+        padding: 4px 6px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+      }
+
+      .top-row-1 {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+
+      .top-row-2 {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         gap: 4px;
+        overflow-x: auto;
+      }
+
+      .brand-signal {
+        gap: 6px;
       }
 
       .np-title {
-        max-width: 85px;
-        font-size: 0.72rem;
+        max-width: 140px;
+        font-size: 0.74rem;
       }
 
       .top-controls {
-        gap: 2px;
+        gap: 3px;
+        flex-wrap: nowrap;
+        width: 100%;
+        justify-content: space-between;
       }
 
       .top-controls .action-btn {
         height: 26px;
-        padding: 0 4px;
+        padding: 0 5px;
         font-size: 0.65rem;
       }
 
-      .top-controls .vol-group,
-      .top-controls #channelsBtn,
-      .top-controls #fsToggleBtn {
-        display: none; /* Hide redundant controls to easily fit in portrait width */
+      .top-controls .vol-group {
+        padding: 1px 3px;
       }
 
-      .search-box {
-        width: 110px;
+      .top-controls .vol-indicator {
+        min-width: 28px;
+        font-size: 0.65rem;
       }
 
       .stage {
-        flex-direction: column;
-        width: 100%;
-        height: calc(100% - 42px);
+        flex-direction: column !important;
+        width: 100% !important;
+        flex: 1 1 0% !important;
       }
 
       .player-section {
-        flex: 0 0 auto;
-        width: 100%;
-        height: auto;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        height: auto !important;
       }
 
       .video-viewport {
-        width: 100%;
-        height: auto;
-        align-items: flex-start; /* Pinned topmost */
+        width: 100% !important;
+        height: auto !important;
+        align-items: flex-start !important;
       }
 
       .video-ratio-box {
         width: 100% !important;
         height: auto !important;
         max-height: calc(100vw * (9 / 16)) !important;
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 16 / 9 !important;
       }
 
       .sidebar {
         position: static !important;
+        top: auto !important;
+        bottom: 0 !important;
         transform: none !important;
         pointer-events: auto !important;
         box-shadow: none !important;
         border-left: none;
         border-top: 1px solid var(--border);
         width: 100% !important;
-        flex: 1 1 0% !important; /* Fills all remaining space below video */
+        flex: 1 1 0% !important;
         height: auto !important;
       }
 
       .sidebar-header {
-        height: 20px;
+        height: 18px;
         padding: 0 6px;
-        font-size: 0.60rem;
+        font-size: 0.58rem;
       }
 
       .channel-list {
-        overflow-y: hidden;
+        overflow-y: hidden !important;
       }
     }
   </style>
@@ -747,53 +741,62 @@
           <polygon points="34,20 39,22 37,17 40,14 35,15 33,11 32,16 27,16 31,19 29,24" fill="#fff"/>
         </svg>
       </g>
-      <!-- Japan (Special Category) -->
-      <g id="flag-jp">
+      <!-- Zimbabwe Flag (Special Category - Z) -->
+      <g id="flag-zw">
         <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="60" height="40" fill="#ffffff" stroke="#e2e8f0" stroke-width="0.8"/>
-          <circle cx="30" cy="20" r="12" fill="#bc002d"/>
+          <rect width="60" height="5.71" fill="#319241"/>
+          <rect y="5.71" width="60" height="5.71" fill="#ffd200"/>
+          <rect y="11.42" width="60" height="5.71" fill="#de2010"/>
+          <rect y="17.13" width="60" height="5.74" fill="#000000"/>
+          <rect y="22.87" width="60" height="5.71" fill="#de2010"/>
+          <rect y="28.58" width="60" height="5.71" fill="#ffd200"/>
+          <rect y="34.29" width="60" height="5.71" fill="#319241"/>
+          <!-- White triangle with black border -->
+          <polygon points="0,0 24,20 0,40" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+          <!-- Red 5-pointed star -->
+          <polygon points="8,15 9.8,20.5 15,20.5 10.8,23.5 12.4,28.5 8,25.5 3.6,28.5 5.2,23.5 1,20.5 6.2,20.5" fill="#de2010"/>
         </svg>
       </g>
     </defs>
   </svg>
 
   <div id="app">
-    <!-- Top Bar: Signals, Controls with Shortcuts, Search -->
+    <!-- Top Bar -->
     <header class="unified-top-bar" id="unifiedTopBar">
-      <div class="brand-signal">
-        <div class="live-dot" title="AFL TV Live Stream"></div>
-        <div class="np-info">
-          <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
-          <div class="np-text">
-            <div id="npTitle" class="np-title">Select channel</div>
-            <div id="npCategory" class="np-category">
-              <svg id="npFlag" class="flag-icon" style="display:none;"></svg>
-              <span id="npCategoryText">-</span>
-              <span id="npResBadge" class="res-badge">...</span>
+      <div class="top-row-1">
+        <div class="brand-signal">
+          <div class="live-dot" title="AFL TV Live Stream"></div>
+          <div class="np-info">
+            <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
+            <div class="np-text">
+              <div id="npTitle" class="np-title">Select channel</div>
+              <div id="npCategory" class="np-category">
+                <svg id="npFlag" class="flag-icon" style="display:none;"></svg>
+                <span id="npCategoryText">-</span>
+                <span id="npResBadge" class="res-badge">...</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="top-controls">
-        <button class="action-btn" id="playPauseBtn">⏯ Play <kbd>Space</kbd></button>
-        <button class="action-btn" id="prevChBtn">◀ Prev <kbd>◀</kbd></button>
-        <button class="action-btn" id="nextChBtn"><kbd>▶</kbd> Next ▶</button>
+      <div class="top-row-2">
+        <div class="top-controls">
+          <button class="action-btn" id="playPauseBtn">⏯ Play <kbd>Space</kbd></button>
+          <button class="action-btn" id="prevChBtn">◀ Prev <kbd>◀</kbd></button>
+          <button class="action-btn" id="nextChBtn"><kbd>▶</kbd> Next ▶</button>
 
-        <div class="vol-group">
-          <button class="action-btn btn-sm" id="volDownBtn" title="Volume Down [▼]">🔉 <kbd>▼</kbd></button>
-          <div class="vol-indicator" id="volDisplay" title="Click to Mute/Unmute [M]"><span id="volPercent">100%</span> <kbd>M</kbd></div>
-          <button class="action-btn btn-sm" id="volUpBtn" title="Volume Up [▲]">🔊 <kbd>▲</kbd></button>
+          <div class="vol-group">
+            <button class="action-btn btn-sm" id="volDownBtn" title="Volume Down [▼]">🔉 <kbd>▼</kbd></button>
+            <div class="vol-indicator" id="volDisplay" title="Click to Mute/Unmute [M]"><span id="volPercent">100%</span> <kbd>M</kbd></div>
+            <button class="action-btn btn-sm" id="volUpBtn" title="Volume Up [▲]">🔊 <kbd>▲</kbd></button>
+          </div>
+
+          <button class="action-btn" id="ccBtn" title="Toggle Subtitles / Captions [-]">💬 CC <kbd>-</kbd></button>
+          <button class="action-btn" id="pipBtn" title="Picture in Picture [P]">⧉ PiP <kbd>P</kbd></button>
+          <button class="action-btn" id="fsToggleBtn" title="Toggle Fullscreen [Enter / F11]">⛶ Fullscreen <kbd>Enter</kbd></button>
+          <button class="action-btn" id="channelsBtn" title="Toggle Channels Drawer [C]">☰ Channels <kbd>C</kbd></button>
         </div>
-
-        <button class="action-btn" id="ccBtn" title="Toggle Subtitles / Captions [-]">💬 CC <kbd>-</kbd></button>
-        <button class="action-btn" id="pipBtn" title="Picture in Picture [P]">⧉ PiP <kbd>P</kbd></button>
-        <button class="action-btn" id="fsToggleBtn" title="Toggle Fullscreen [Enter / F11]">⛶ Fullscreen <kbd>Enter</kbd></button>
-        <button class="action-btn" id="channelsBtn" title="Toggle Channels Drawer [C]">☰ Channels <kbd>C</kbd></button>
-      </div>
-
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search [K] (Esc)..." autocomplete="off">
       </div>
     </header>
 
@@ -830,16 +833,17 @@
       LU: { flagId: "#flag-lu", key: "L" },
       IT: { flagId: "#flag-it", key: "I/İ" },
       TR: { flagId: "#flag-tr", key: "T" },
-      SPECIAL: { flagId: "#flag-jp", key: "J" }
+      SPECIAL: { flagId: "#flag-zw", key: "Z" }
     };
 
     const LOGOS = {
       bloomberg: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3EBloomberg%3C/text%3E%3C/svg%3E`,
       cnbc: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='18' text-anchor='middle'%3ECNBC%3C/text%3E%3C/svg%3E`,
+      tf1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='50' height='40' fill='%23002f6c'/%3E%3Crect x='50' width='50' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='20' text-anchor='middle'%3ETF1%3C/text%3E%3C/svg%3E`,
+      lci: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002f6c'/%3E%3Crect y='32' width='100' height='8' fill='%23e2001a'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3ELCI%3C/text%3E%3C/svg%3E`,
       bfm: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%230055a5'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EBFMTV%3C/text%3E%3C/svg%3E`,
       bfmbiz: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002244'/%3E%3Ctext x='50' y='26' fill='%2300aaff' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3EBFM BIZ%3C/text%3E%3C/svg%3E`,
       cnews: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNEWS%3C/text%3E%3C/svg%3E`,
-      min20: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%231b365d'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='14' text-anchor='middle'%3E20 MIN TV%3C/text%3E%3C/svg%3E`,
       negocios: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23111'/%3E%3Ctext x='50' y='25' fill='%2300ff88' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3ENegocios%3C/text%3E%3C/svg%3E`,
       daserste: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%2300305e'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ctext x='50' y='26' fill='%2300305e' font-family='sans-serif' font-weight='bold' font-size='17' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E`,
       zdf: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23fa7d19'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EZDF%3C/text%3E%3C/svg%3E`,
@@ -890,11 +894,36 @@
       { country: "EN", id: "CNBCUK.uk", name: "CNBC UK", group: "Business", logo: LOGOS.cnbc, url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8" },
 
       // France (Alphabetical)
-      { country: "FR", id: "20MinutesTV.fr", name: "20 Minutes TV", group: "News", logo: LOGOS.min20, url: "https://live-20minutestv.digiteka.com/1961167769/index.m3u8" },
       { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
       { country: "FR", id: "BFMBusiness.fr", name: "BFM Business", group: "Business", logo: LOGOS.bfmbiz, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTechCo.fr", name: "BFM Tech & Co", group: "Science", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TECHANDCO/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
+      { country: "FR", id: "CNews.fr", name: "CNews", group: "News", logo: LOGOS.cnews, url: "https://www.dailymotion.com/cdn/live/video/x91c8ww.m3u8?sec=D9OwEfHs-e7O6pQ-qlnROg" },
+      { 
+        country: "FR", 
+        id: "LCI.fr", 
+        name: "LCI", 
+        group: "News", 
+        logo: LOGOS.lci, 
+        urls: [
+          "https://lci-live-p2.tf1.fr/lci/1/hls/live_2500.m3u8",
+          "https://lci-live.tf1.fr/lci/1/hls/live_2500.m3u8",
+          "https://tf1-hls-live-ssl.tf1.fr/lci/1/hls/live_2500.m3u8"
+        ],
+        url: "https://lci-live-p2.tf1.fr/lci/1/hls/live_2500.m3u8" 
+      },
+      { 
+        country: "FR", 
+        id: "TF1.fr", 
+        name: "TF1", 
+        group: "General", 
+        logo: LOGOS.tf1, 
+        urls: [
+          "https://tf1-hls-live-ssl.tf1.fr/tf1/1/hls/live_2500.m3u8",
+          "https://tf1-live-p2.tf1.fr/tf1/1/hls/live_2500.m3u8"
+        ],
+        url: "https://tf1-hls-live-ssl.tf1.fr/tf1/1/hls/live_2500.m3u8" 
+      },
 
       // Spain (Alphabetical)
       { country: "ES", id: "NegociosTV.es", name: "Negocios TV", group: "Business", logo: LOGOS.negocios, url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" },
@@ -923,7 +952,6 @@
       { country: "LU", id: "RTLTeleLetzebuerg2.lu", name: "RTL Télé Lëtzebuerg 2", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8" },
 
       // Italy (Alphabetical)
-      { country: "IT", id: "CNews.it", name: "CNews", group: "News", logo: LOGOS.cnews, url: "https://www.dailymotion.com/cdn/live/video/x91c8ww.m3u8?sec=D9OwEfHs-e7O6pQ-qlnROg" },
       { country: "IT", id: "RaiUno.it", name: "Rai 1", group: "General", logo: LOGOS.rai1, url: "https://dash2.antik.sk/live/test_rai_uno_tizen/playlist.m3u8" },
       { country: "IT", id: "RaiTre.it", name: "Rai 3", group: "General", logo: LOGOS.rai3, url: "https://dash2.antik.sk/live/test_rai_tre_tizen/playlist.m3u8" },
 
@@ -939,7 +967,7 @@
       { country: "TR", id: "TGRTHaber.tr", name: "TGRT Haber", group: "News", logo: LOGOS.tgrt, url: "https://canli.tgrthaber.com/tgrt.m3u8" },
       { country: "TR", id: "Tele1.tr", name: "Tele 1", group: "News", logo: LOGOS.tele1, url: "https://tele1-live.ercdn.net/tele1/tele1.m3u8" },
 
-      // Special / Japan Category
+      // Special / Zimbabwe Category (Shortcut: Z)
       { 
         country: "SPECIAL", 
         id: "AksamSefasi.special", 
@@ -1011,7 +1039,6 @@
     const gate = document.getElementById('fullscreen-gate');
     const sidebar = document.getElementById('sidebar');
     const channelListEl = document.getElementById('channelList');
-    const searchInput = document.getElementById('searchInput');
     const fsToggleBtn = document.getElementById('fsToggleBtn');
     const pipBtn = document.getElementById('pipBtn');
     const ccBtn = document.getElementById('ccBtn');
@@ -1038,7 +1065,6 @@
     let cursorTimeout = null;
     let sidebarHideTimeout = null;
     let toastTimeout = null;
-    let isSearchFocused = false;
 
     function showToast(msg) {
       toastMessage.textContent = msg;
@@ -1161,9 +1187,8 @@
     }
 
     // Render channels: Flag only headers, alphabetical for all groups except TR and SPECIAL; n-tv at top of DE
-    function renderChannels(filterText = '') {
+    function renderChannels() {
       channelListEl.innerHTML = '';
-      const filter = filterText.toLowerCase();
       let totalMatched = 0;
 
       const countryGroups = {};
@@ -1185,13 +1210,8 @@
           });
         }
 
-        const matched = channels.filter(ch => 
-          ch.name.toLowerCase().includes(filter) ||
-          ch.group.toLowerCase().includes(filter)
-        );
-
-        if (matched.length > 0) {
-          totalMatched += matched.length;
+        if (channels.length > 0) {
+          totalMatched += channels.length;
 
           if (meta.flagId) {
             const flagDiv = document.createElement('div');
@@ -1205,7 +1225,7 @@
             channelListEl.appendChild(flagDiv);
           }
 
-          matched.forEach(ch => {
+          channels.forEach(ch => {
             const item = document.createElement('div');
             item.className = `channel-item ${ch.originalIndex === activeIndex ? 'active' : ''}`;
             item.setAttribute('data-index', ch.originalIndex);
@@ -1342,6 +1362,26 @@
       loadChannel(nextIndex);
     }
 
+    // Step sequentially through channels belonging to the specified country category
+    function cycleCountryCategory(countryCode) {
+      const countryIndices = [];
+      CHANNELS.forEach((ch, idx) => {
+        if (ch.country === countryCode && ch.isAvailable !== false) {
+          countryIndices.push(idx);
+        }
+      });
+
+      if (countryIndices.length === 0) return;
+
+      const currentPos = countryIndices.indexOf(activeIndex);
+      if (currentPos !== -1) {
+        const nextPos = (currentPos + 1) % countryIndices.length;
+        loadChannel(countryIndices[nextPos]);
+      } else {
+        loadChannel(countryIndices[0]);
+      }
+    }
+
     function extractMaxHeightFromPlaylist(text) {
       const matches = [...text.matchAll(/RESOLUTION=\d+x(\d+)/gi)];
       if (matches.length > 0) {
@@ -1390,7 +1430,7 @@
       });
 
       await Promise.allSettled(probePromises);
-      renderChannels(searchInput.value);
+      renderChannels();
 
       if (CHANNELS[activeIndex] && CHANNELS[activeIndex].isAvailable === false) {
         browseChannel(1);
@@ -1434,14 +1474,14 @@
       appContainer.classList.remove('hide-cursor');
       clearTimeout(cursorTimeout);
       cursorTimeout = setTimeout(() => {
-        if (!sidebar.classList.contains('visible') && !unifiedTopBar.matches(':hover') && !isSearchFocused) {
+        if (!sidebar.classList.contains('visible') && !unifiedTopBar.matches(':hover')) {
           appContainer.classList.add('hide-cursor');
         }
       }, 2500);
 
       // Top bar reveal on desktop fullscreen
       if (isFullscreen() && windowWidth > 900) {
-        if (e.clientY <= 50 || unifiedTopBar.matches(':hover') || isSearchFocused) {
+        if (e.clientY <= 50 || unifiedTopBar.matches(':hover')) {
           unifiedTopBar.classList.add('reveal-top');
         } else {
           unifiedTopBar.classList.remove('reveal-top');
@@ -1455,7 +1495,7 @@
 
         if (e.clientX >= (windowWidth - triggerThreshold) || sidebar.matches(':hover')) {
           showSidebar();
-        } else if (sidebar.classList.contains('visible') && !isSearchFocused) {
+        } else if (sidebar.classList.contains('visible')) {
           if (e.clientX < (windowWidth - sidebarWidth)) {
             scheduleHideSidebar();
           }
@@ -1469,7 +1509,7 @@
     }
 
     function scheduleHideSidebar() {
-      if (isSearchFocused) return;
+      if (window.innerWidth <= 900) return;
       clearTimeout(sidebarHideTimeout);
       sidebarHideTimeout = setTimeout(() => {
         sidebar.classList.remove('visible');
@@ -1477,21 +1517,16 @@
     }
 
     function hideSidebarImmediately() {
-      if (isSearchFocused) return;
+      if (window.innerWidth <= 900) return;
       clearTimeout(sidebarHideTimeout);
       sidebar.classList.remove('visible');
-    }
-
-    function jumpToFirstCountry(countryCode) {
-      const idx = CHANNELS.findIndex(ch => ch.country === countryCode && ch.isAvailable !== false);
-      if (idx !== -1) loadChannel(idx);
     }
 
     viewport.addEventListener('click', (e) => {
       if (e.target.closest('#fullscreen-gate') || e.target.closest('#sidebar')) {
         return;
       }
-      if (sidebar.classList.contains('visible') && !isSearchFocused && window.innerWidth > 900) {
+      if (sidebar.classList.contains('visible') && window.innerWidth > 900) {
         hideSidebarImmediately();
       }
     });
@@ -1499,18 +1534,6 @@
     window.addEventListener('mousemove', handleMouseMove);
     sidebar.addEventListener('mouseenter', showSidebar);
     sidebar.addEventListener('mouseleave', scheduleHideSidebar);
-
-    // Search focus: Keep drawer active and locked while searching
-    searchInput.addEventListener('focus', () => {
-      isSearchFocused = true;
-      showSidebar();
-      unifiedTopBar.classList.add('reveal-top');
-    });
-
-    searchInput.addEventListener('blur', () => {
-      isSearchFocused = false;
-      scheduleHideSidebar();
-    });
 
     document.addEventListener('fullscreenchange', () => {
       if (!isFullscreen()) {
@@ -1527,13 +1550,7 @@
 
     // Keyboard Shortcuts Dispatcher
     window.addEventListener('keydown', (e) => {
-      const isInputActive = (document.activeElement === searchInput);
-
       if (e.key === 'Escape') {
-        if (isInputActive) {
-          searchInput.blur();
-          return;
-        }
         if (sidebar.classList.contains('visible') && window.innerWidth > 900) {
           hideSidebarImmediately();
           return;
@@ -1542,26 +1559,6 @@
           toggleFullscreen();
           return;
         }
-      }
-
-      // Single-key shortcut [K] to trigger search box from anywhere
-      if (!isInputActive && (e.key === 'k' || e.key === 'K')) {
-        e.preventDefault();
-        searchInput.focus();
-        searchInput.select();
-        return;
-      }
-
-      if (isInputActive) {
-        if (e.key === 'Enter') {
-          const firstItem = document.querySelector('.channel-item');
-          if (firstItem) {
-            const idx = parseInt(firstItem.getAttribute('data-index'), 10);
-            loadChannel(idx);
-            searchInput.blur();
-          }
-        }
-        return;
       }
 
       // F11 & Enter triggered fullscreen unification
@@ -1617,31 +1614,31 @@
         e.preventDefault();
         setVolumeDelta(-0.05);
       } 
-      // Country jumping (including I / İ / ı for Italy, J for Japan)
+      // Sequential category cycling (E, F, S, D/G, L, I/İ, T, Z)
       else if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();
-        jumpToFirstCountry('EN');
+        cycleCountryCategory('EN');
       } else if (e.key === 'f' || e.key === 'F') {
         e.preventDefault();
-        jumpToFirstCountry('FR');
+        cycleCountryCategory('FR');
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
-        jumpToFirstCountry('ES');
+        cycleCountryCategory('ES');
       } else if (e.key === 'd' || e.key === 'D' || e.key === 'g' || e.key === 'G') {
         e.preventDefault();
-        jumpToFirstCountry('DE');
+        cycleCountryCategory('DE');
       } else if (e.key === 'l' || e.key === 'L') {
         e.preventDefault();
-        jumpToFirstCountry('LU');
+        cycleCountryCategory('LU');
       } else if (e.code === 'KeyI' || e.key === 'i' || e.key === 'I' || e.key === 'İ' || e.key === 'ı') {
         e.preventDefault();
-        jumpToFirstCountry('IT');
+        cycleCountryCategory('IT');
       } else if (e.key === 't' || e.key === 'T') {
         e.preventDefault();
-        jumpToFirstCountry('TR');
-      } else if (e.key === 'j' || e.key === 'J') {
+        cycleCountryCategory('TR');
+      } else if (e.key === 'z' || e.key === 'Z') {
         e.preventDefault();
-        jumpToFirstCountry('SPECIAL');
+        cycleCountryCategory('SPECIAL');
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
         sidebar.classList.toggle('visible');
@@ -1668,7 +1665,6 @@
     volDisplay.addEventListener('click', (e) => { e.stopPropagation(); toggleMute(); });
 
     sidebar.addEventListener('click', (e) => e.stopPropagation());
-    searchInput.addEventListener('input', (e) => renderChannels(e.target.value));
 
     // Bootstrap
     renderChannels();
