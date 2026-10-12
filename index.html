@@ -52,7 +52,6 @@
       position: relative;
     }
 
-    /* Top Bar Default Desktop */
     .unified-top-bar {
       height: var(--bar-h);
       background-color: var(--bg-surface);
@@ -67,7 +66,6 @@
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
-    /* Desktop Fullscreen Auto-hide */
     @media (min-width: 901px) {
       #app:fullscreen .unified-top-bar,
       #app:-webkit-full-screen .unified-top-bar {
@@ -248,7 +246,6 @@
       pointer-events: none;
     }
 
-    /* Core Stage Layout */
     .stage {
       flex: 1 1 0%;
       min-height: 0;
@@ -268,7 +265,6 @@
       flex: 0 0 auto;
     }
 
-    /* Video Viewport */
     .video-viewport {
       height: 100%;
       position: relative;
@@ -325,7 +321,6 @@
       cursor: none;
     }
 
-    /* Channels Sidebar (Default Desktop Windowed) */
     .sidebar {
       position: static !important;
       flex: 1 1 0% !important;
@@ -343,7 +338,6 @@
       pointer-events: auto !important;
     }
 
-    /* Desktop Fullscreen Only: Sidebar becomes hidden drawer */
     @media (min-width: 901px) {
       #app:fullscreen .stage,
       #app:-webkit-full-screen .stage {
@@ -532,15 +526,7 @@
       opacity: 1;
     }
 
-    /* =========================================================
-       MOBILE SPECIFIC LAYOUTS
-       ========================================================= */
-
-    /* 1. MOBILE PORTRAIT MODE:
-       - Video pinned topmost (nothing above)
-       - Topbar in 2 rows below video (Channels button hidden)
-       - Channel list fills remaining bottom space (zero scroll)
-    */
+    /* 1. Mobile Portrait Layout */
     @media (orientation: portrait) and (max-width: 900px) {
       #app {
         flex-direction: column !important;
@@ -602,7 +588,6 @@
         width: 100%;
       }
 
-      /* 2-Row Grid for Portrait (no Channels button) */
       .top-controls {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
@@ -611,7 +596,7 @@
       }
 
       #channelsBtn {
-        display: none !important; /* Channels button unnecessary on mobile */
+        display: none !important;
       }
 
       .top-controls .action-btn {
@@ -648,14 +633,14 @@
         padding: 0 6px;
         font-size: 0.58rem;
       }
+
+      /* Hide flag dividers on mobile portrait */
+      .flag-divider {
+        display: none !important;
+      }
     }
 
-    /* 2. MOBILE LANDSCAPE & FULLSCREEN:
-       - Uses full phone width and full screen height
-       - Video fills height (16:9 ratio)
-       - Left panel: Controls adjust to left remaining space
-       - Right panel: Channels list adjusts to right remaining space (always visible)
-    */
+    /* 2. Mobile Landscape Layout */
     @media (orientation: landscape) and (max-height: 600px), (orientation: landscape) and (max-width: 950px) {
       #app,
       #app:fullscreen,
@@ -669,7 +654,6 @@
         display: none !important;
       }
 
-      /* Leftmost controls bar: takes whatever space is left to the left of the video */
       .unified-top-bar,
       #app:fullscreen .unified-top-bar,
       #app:-webkit-full-screen .unified-top-bar {
@@ -753,7 +737,6 @@
         font-size: 0.58rem;
       }
 
-      /* Center stage: Video takes exact full height with 16:9 ratio */
       .stage,
       #app:fullscreen .stage,
       #app:-webkit-full-screen .stage {
@@ -790,7 +773,6 @@
         aspect-ratio: 16 / 9 !important;
       }
 
-      /* Right panel: Channels list takes all remaining space to the right */
       .sidebar,
       #app:fullscreen .sidebar,
       #app:-webkit-full-screen .sidebar {
@@ -822,12 +804,16 @@
       .ch-name {
         font-size: 0.62rem !important;
       }
+
+      /* Hide flag dividers on mobile landscape */
+      .flag-divider {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Reusable SVG Flags -->
   <svg style="display: none;">
     <defs>
       <!-- English -->
@@ -957,7 +943,7 @@
 
     <div class="stage" id="stageContainer">
       <section class="player-section" id="playerContainer">
-        <!-- 16:9 Video Viewport -->
+        <!-- 16:9 Leftmost Video Viewport Structure -->
         <div class="video-viewport" id="viewport">
           <div class="video-ratio-box">
             <video id="videoPlayer" autoplay muted playsinline webkit-playsinline></video>
@@ -971,7 +957,7 @@
         </div>
       </section>
 
-      <!-- Sidebar (occupies remainder on desktop / mobile) -->
+      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header" id="channelCount">Channels</div>
         <div class="channel-list" id="channelList"></div>
@@ -1142,7 +1128,6 @@
       }
     ];
 
-    // DOM References
     const appContainer = document.getElementById('app');
     const unifiedTopBar = document.getElementById('unifiedTopBar');
     const video = document.getElementById('videoPlayer');
@@ -1170,7 +1155,6 @@
     const npResBadge = document.getElementById('npResBadge');
     const channelCount = document.getElementById('channelCount');
 
-    // App State
     let currentHls = null;
     let activeIndex = 0;
     let cursorTimeout = null;
@@ -1285,13 +1269,21 @@
     function adjustChannelRowSizes() {
       const containerHeight = channelListEl.clientHeight;
       const totalItems = channelListEl.querySelectorAll('.channel-item').length;
-      const totalDividers = channelListEl.querySelectorAll('.flag-divider').length;
+      
+      // Calculate dividers only if they are actually visible (non-mobile modes)
+      let visibleDividersCount = 0;
+      const dividers = channelListEl.querySelectorAll('.flag-divider');
+      dividers.forEach(d => {
+        if (window.getComputedStyle(d).display !== 'none') {
+          visibleDividersCount++;
+        }
+      });
 
       if (totalItems > 0 && containerHeight > 0) {
-        const dividerSpace = totalDividers * 12;
-        const availableForItems = Math.max(containerHeight - dividerSpace - 2, 20);
+        const dividerSpace = visibleDividersCount * 15;
+        const availableForItems = Math.max(containerHeight - dividerSpace - 4, 20);
         const calculatedRowH = Math.floor(availableForItems / totalItems);
-        const clampedH = Math.min(Math.max(calculatedRowH, 10), 26);
+        const clampedH = Math.min(Math.max(calculatedRowH, 11), 26);
         document.documentElement.style.setProperty('--row-h', `${clampedH}px`);
       }
     }
@@ -1596,7 +1588,7 @@
         }
       }, 2500);
 
-      // Top bar reveal in fullscreen (desktop)
+      // Desktop fullscreen top bar auto-hide
       if (isFullscreen() && windowWidth > 900) {
         if (e.clientY <= 50 || unifiedTopBar.matches(':hover')) {
           unifiedTopBar.classList.add('reveal-top');
@@ -1605,7 +1597,7 @@
         }
       }
 
-      // Sidebar drawer hover trigger ONLY on desktop fullscreen
+      // Desktop fullscreen sidebar hover drawer
       if (isFullscreen() && windowWidth > 900) {
         const sidebarWidth = 220;
         const triggerThreshold = sidebarWidth / 2;
@@ -1669,7 +1661,6 @@
       setTimeout(adjustChannelRowSizes, 150);
     });
 
-    // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (isFullscreen()) {
@@ -1760,7 +1751,6 @@
       }
     });
 
-    // Top Bar Actions
     gate.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleFullscreen();
@@ -1786,7 +1776,7 @@
 
     sidebar.addEventListener('click', (e) => e.stopPropagation());
 
-    // Bootstrap
+    // Boot
     renderChannels();
     loadChannel(0);
     updateVolumeDisplay();
