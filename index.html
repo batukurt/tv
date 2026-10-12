@@ -22,7 +22,7 @@
       --border: #23293b;
       --bar-h: 46px;
       --row-h: 22px;
-      --sidebar-w: 220px;
+      --sidebar-w: 240px;
     }
 
     * {
@@ -67,26 +67,24 @@
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
-    /* Desktop Fullscreen Auto-hide */
-    @media (min-width: 900px) {
-      #app:fullscreen .unified-top-bar,
-      #app:-webkit-full-screen .unified-top-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: rgba(20, 23, 33, 0.95);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        transform: translateY(-100%);
-        opacity: 0;
-      }
+    /* Fullscreen Auto-hide (reveals near top edge) */
+    #app:fullscreen .unified-top-bar,
+    #app:-webkit-full-screen .unified-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(20, 23, 33, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transform: translateY(-100%);
+      opacity: 0;
+    }
 
-      #app:fullscreen .unified-top-bar.reveal-top,
-      #app:-webkit-full-screen .unified-top-bar.reveal-top {
-        transform: translateY(0);
-        opacity: 1;
-      }
+    #app:fullscreen .unified-top-bar.reveal-top,
+    #app:-webkit-full-screen .unified-top-bar.reveal-top {
+      transform: translateY(0);
+      opacity: 1;
     }
 
     .brand-signal {
@@ -243,40 +241,38 @@
       pointer-events: none;
     }
 
+    /* Core Stage Layout */
     .stage {
       flex: 1 1 0%;
       min-height: 0;
       position: relative;
       overflow: hidden;
       display: flex;
+      flex-direction: row;
     }
 
     .player-section {
       display: flex;
       flex-direction: column;
-      width: 100%;
       height: 100%;
       min-height: 0;
       background: #000;
       position: relative;
+      flex: 0 0 auto;
     }
 
-    /* Fixed 16:9 Letterboxed Stage */
+    /* 16:9 Leftmost Video Container */
     .video-viewport {
-      flex: 1 1 0%;
-      min-height: 0;
+      height: 100%;
       position: relative;
       background-color: #000;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .video-ratio-box {
-      width: 100%;
       height: 100%;
-      max-width: calc(100vh * (16 / 9));
-      max-height: calc(100vw * (9 / 16));
       aspect-ratio: 16 / 9;
       position: relative;
       display: flex;
@@ -322,30 +318,70 @@
       cursor: none;
     }
 
-    /* Channel Sidebar */
+    /* Channels Sidebar (Default Windowed: In-flow right panel strictly within stage) */
     .sidebar {
-      position: absolute;
-      top: var(--bar-h) !important;
-      right: 0;
-      bottom: 0 !important;
-      width: var(--sidebar-w);
-      min-height: 0;
+      position: static !important;
+      flex: 1 1 0% !important;
+      width: auto !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      min-height: 0 !important;
       background-color: rgba(17, 20, 29, 0.98);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border-left: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       z-index: 85;
-      transform: translateX(100%);
-      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
-      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.7);
-      pointer-events: none;
+      transform: none !important;
+      box-shadow: none !important;
+      pointer-events: auto !important;
     }
 
-    .sidebar.visible {
-      transform: translateX(0);
-      pointer-events: auto;
+    /* Fullscreen: Video expands & centers, Sidebar becomes floating overlay drawer */
+    #app:fullscreen .stage,
+    #app:-webkit-full-screen .stage {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #app:fullscreen .player-section,
+    #app:-webkit-full-screen .player-section {
+      width: 100% !important;
+      height: 100% !important;
+      flex: 1 1 100% !important;
+    }
+
+    #app:fullscreen .video-viewport,
+    #app:-webkit-full-screen .video-viewport {
+      width: 100% !important;
+      height: 100% !important;
+      justify-content: center !important;
+    }
+
+    #app:fullscreen .video-ratio-box,
+    #app:-webkit-full-screen .video-ratio-box {
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+
+    #app:fullscreen .sidebar,
+    #app:-webkit-full-screen .sidebar {
+      position: absolute !important;
+      top: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: var(--sidebar-w) !important;
+      flex: 0 0 auto !important;
+      height: 100% !important;
+      transform: translateX(100%) !important;
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.7) !important;
+      pointer-events: none !important;
+    }
+
+    #app:fullscreen .sidebar.visible,
+    #app:-webkit-full-screen .sidebar.visible {
+      transform: translateX(0) !important;
+      pointer-events: auto !important;
     }
 
     .sidebar-header {
@@ -487,7 +523,7 @@
       opacity: 1;
     }
 
-    /* Mobile Landscape */
+    /* Mobile Landscape: Video leftmost full height, channel list occupies remaining right space */
     @media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (max-width: 950px) {
       .unified-top-bar {
         display: none !important;
@@ -519,12 +555,6 @@
       }
 
       .sidebar {
-        position: static !important;
-        top: 0 !important;
-        bottom: 0 !important;
-        transform: none !important;
-        pointer-events: auto !important;
-        box-shadow: none !important;
         border-left: 1px solid var(--border);
         flex: 1 1 0% !important;
         width: auto !important;
@@ -534,22 +564,15 @@
       .sidebar-header {
         display: none;
       }
-
-      .channel-list {
-        overflow-y: hidden !important;
-      }
     }
 
-    /* Mobile Portrait */
+    /* Mobile Portrait: Top bar -> 16:9 Video -> Channel list occupies space below video */
     @media (orientation: portrait) and (max-width: 768px) {
       #app {
         flex-direction: column !important;
       }
 
       .unified-top-bar {
-        position: static !important;
-        transform: none !important;
-        opacity: 1 !important;
         height: auto !important;
         min-height: 74px;
         padding: 4px 6px !important;
@@ -632,14 +655,8 @@
       }
 
       .sidebar {
-        position: static !important;
-        top: auto !important;
-        bottom: 0 !important;
-        transform: none !important;
-        pointer-events: auto !important;
-        box-shadow: none !important;
-        border-left: none;
-        border-top: 1px solid var(--border);
+        border-left: none !important;
+        border-top: 1px solid var(--border) !important;
         width: 100% !important;
         flex: 1 1 0% !important;
         height: auto !important;
@@ -649,10 +666,6 @@
         height: 18px;
         padding: 0 6px;
         font-size: 0.58rem;
-      }
-
-      .channel-list {
-        overflow-y: hidden !important;
       }
     }
   </style>
@@ -789,7 +802,7 @@
 
     <div class="stage" id="stageContainer">
       <section class="player-section" id="playerContainer">
-        <!-- 16:9 Letterboxed Viewport Structure -->
+        <!-- 16:9 Leftmost Video Viewport Structure -->
         <div class="video-viewport" id="viewport">
           <div class="video-ratio-box">
             <video id="videoPlayer" autoplay muted playsinline webkit-playsinline></video>
@@ -801,13 +814,13 @@
 
           <div id="toastMessage" class="toast-msg"></div>
         </div>
-
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-          <div class="sidebar-header" id="channelCount">Channels</div>
-          <div class="channel-list" id="channelList"></div>
-        </aside>
       </section>
+
+      <!-- Sidebar (occupies remaining space on desktop/mobile) -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header" id="channelCount">Channels</div>
+        <div class="channel-list" id="channelList"></div>
+      </aside>
     </div>
   </div>
 
@@ -829,16 +842,18 @@
       bfm: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%230055a5'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EBFMTV%3C/text%3E%3C/svg%3E`,
       bfmbiz: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002244'/%3E%3Ctext x='50' y='26' fill='%2300aaff' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3EBFM BIZ%3C/text%3E%3C/svg%3E`,
       negocios: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23111'/%3E%3Ctext x='50' y='25' fill='%2300ff88' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3ENegocios%3C/text%3E%3C/svg%3E`,
-      ntv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c00'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3En-tv%3C/text%3E%3C/svg%3E`,
+      daserste: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%2300305e'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ctext x='50' y='26' fill='%2300305e' font-family='sans-serif' font-weight='bold' font-size='17' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E`,
       zdf: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23fa7d19'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EZDF%3C/text%3E%3C/svg%3E`,
       wdr: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3EWDR%3C/text%3E%3C/svg%3E`,
       prosieben: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='22' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E`,
+      ntv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c00'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3En-tv%3C/text%3E%3C/svg%3E`,
       rtl: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002f6c'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3ERTL%3C/text%3E%3C/svg%3E`,
       cnews: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNEWS%3C/text%3E%3C/svg%3E`,
       rai1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23004b97'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3ERai 1%3C/text%3E%3C/svg%3E`,
       rai3: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23008055'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3ERai 3%3C/text%3E%3C/svg%3E`,
       trt1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETRT 1%3C/text%3E%3C/svg%3E`,
       atv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23f15a24'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3Eatv%3C/text%3E%3C/svg%3E`,
+      kanald: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002b66'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ccircle cx='50' cy='20' r='6' fill='%23002b66'/%3E%3C/svg%3E`,
       haberturk: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23b20000'/%3E%3Ctext x='50' y='25' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='13' text-anchor='middle'%3EHABERTURK%3C/text%3E%3C/svg%3E`,
       bloomberght: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23222'/%3E%3Ctext x='50' y='25' fill='%23ff9900' font-family='sans-serif' font-weight='bold' font-size='13' text-anchor='middle'%3EBLOOMBERG HT%3C/text%3E%3C/svg%3E`,
       cnbce: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002855'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNBC-e%3C/text%3E%3C/svg%3E`,
@@ -850,7 +865,7 @@
     };
 
     const CHANNELS = [
-      // English (Alphabetical)
+      // English
       { 
         country: "EN", 
         id: "BloombergTV.us", 
@@ -875,15 +890,15 @@
       { country: "EN", id: "CNBCUK.uk", name: "CNBC UK", group: "Business", logo: LOGOS.cnbc, url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8" },
 
       // France
-      { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
+      { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
       { country: "FR", id: "BFMBusiness.fr", name: "BFM Business", group: "Business", logo: LOGOS.bfmbiz, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTechCo.fr", name: "BFM Tech & Co", group: "Science", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TECHANDCO/index.m3u8?end=END&start=LIVE" },
-      { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
+      { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
       
       // Spain
       { country: "ES", id: "NegociosTV.es", name: "Negocios TV", group: "Business", logo: LOGOS.negocios, url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" },
       
-      // Germany (n-tv at top, remainder Alphabetical)
+      // Germany
       { 
         country: "DE", 
         id: "ntv.de", 
@@ -897,6 +912,7 @@
         url: "https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8",
         pinnedTop: true 
       },
+      { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://live2.ard-mcdn.de/daserste/live/hls/de/master.m3u8" },
       { country: "DE", id: "ProSieben.de", name: "ProSieben", group: "General", logo: LOGOS.prosieben, url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" },
       { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
       { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
@@ -905,12 +921,12 @@
       { country: "LU", id: "RTLTeleLetzebuerg1.lu", name: "RTL Télé Lëtzebuerg 1", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8" },
       { country: "LU", id: "RTLTeleLetzebuerg2.lu", name: "RTL Télé Lëtzebuerg 2", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8" },
 
-      // Italy (Alphabetical - CNews moved here)
+      // Italy
       { country: "IT", id: "CNews", name: "CNews", group: "News", logo: LOGOS.cnews, url: "https://www.dailymotion.com/cdn/live/video/x91c8ww.m3u8?sec=D9OwEfHs-e7O6pQ-qlnROg" },
       { country: "IT", id: "RaiUno.it", name: "Rai 1", group: "General", logo: LOGOS.rai1, url: "https://dash2.antik.sk/live/test_rai_uno_tizen/playlist.m3u8" },
       { country: "IT", id: "RaiTre.it", name: "Rai 3", group: "General", logo: LOGOS.rai3, url: "https://dash2.antik.sk/live/test_rai_tre_tizen/playlist.m3u8" },
 
-      // Türkiye (Original Order Preserved)
+      // Türkiye
       { country: "TR", id: "BloombergHT.tr", name: "Bloomberg HT", group: "Business;News", logo: LOGOS.bloomberght, url: "https://tv.ensonhaber.com/bloomberght/bloomberght.m3u8" },
       { country: "TR", id: "CNBCe.tr", name: "CNBC-e", group: "Business;Series", logo: LOGOS.cnbce, url: "https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8" },
       { country: "TR", id: "TRT1.tr", name: "TRT 1", group: "General", logo: LOGOS.trt1, url: "https://tv-trt1.medya.trt.com.tr/master.m3u8" },
@@ -919,7 +935,7 @@
       { country: "TR", id: "HalkTV.tr", name: "Halk TV", group: "News", logo: LOGOS.halktv, url: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" },
       { country: "TR", id: "TGRTHaber.tr", name: "TGRT Haber", group: "News", logo: LOGOS.tgrt, url: "https://canli.tgrthaber.com/tgrt.m3u8" },
 
-      // Special / Zimbabwe Category (Shortcut: Z)
+      // Special / Zimbabwe Category (Z)
       { 
         country: "SPECIAL", 
         id: "AksamSefasi.special", 
@@ -971,7 +987,7 @@
       }
     ];
 
-    // DOM Element References
+    // DOM References
     const appContainer = document.getElementById('app');
     const unifiedTopBar = document.getElementById('unifiedTopBar');
     const video = document.getElementById('videoPlayer');
@@ -1415,7 +1431,8 @@
         }
       }, 2500);
 
-      if (isFullscreen() && windowWidth > 900) {
+      // Top bar reveal in fullscreen
+      if (isFullscreen()) {
         if (e.clientY <= 50 || unifiedTopBar.matches(':hover')) {
           unifiedTopBar.classList.add('reveal-top');
         } else {
@@ -1423,7 +1440,8 @@
         }
       }
 
-      if (windowWidth > 900) {
+      // Sidebar drawer hover trigger ONLY when in fullscreen
+      if (isFullscreen()) {
         const sidebarWidth = 220;
         const triggerThreshold = sidebarWidth / 2;
 
@@ -1443,7 +1461,7 @@
     }
 
     function scheduleHideSidebar() {
-      if (window.innerWidth <= 900) return;
+      if (!isFullscreen()) return;
       clearTimeout(sidebarHideTimeout);
       sidebarHideTimeout = setTimeout(() => {
         sidebar.classList.remove('visible');
@@ -1451,7 +1469,7 @@
     }
 
     function hideSidebarImmediately() {
-      if (window.innerWidth <= 900) return;
+      if (!isFullscreen()) return;
       clearTimeout(sidebarHideTimeout);
       sidebar.classList.remove('visible');
     }
@@ -1460,19 +1478,20 @@
       if (e.target.closest('#fullscreen-gate') || e.target.closest('#sidebar')) {
         return;
       }
-      if (sidebar.classList.contains('visible') && window.innerWidth > 900) {
+      if (isFullscreen() && sidebar.classList.contains('visible')) {
         hideSidebarImmediately();
       }
     });
 
     window.addEventListener('mousemove', handleMouseMove);
-    sidebar.addEventListener('mouseenter', showSidebar);
-    sidebar.addEventListener('mouseleave', scheduleHideSidebar);
+    sidebar.addEventListener('mouseenter', () => { if (isFullscreen()) showSidebar(); });
+    sidebar.addEventListener('mouseleave', () => { if (isFullscreen()) scheduleHideSidebar(); });
 
     document.addEventListener('fullscreenchange', () => {
       if (!isFullscreen()) {
         unifiedTopBar.classList.remove('reveal-top');
         appContainer.classList.remove('hide-cursor');
+        sidebar.classList.remove('visible');
       }
       setTimeout(adjustChannelRowSizes, 100);
     });
@@ -1482,13 +1501,14 @@
       setTimeout(adjustChannelRowSizes, 150);
     });
 
+    // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (sidebar.classList.contains('visible') && window.innerWidth > 900) {
-          hideSidebarImmediately();
-          return;
-        }
         if (isFullscreen()) {
+          if (sidebar.classList.contains('visible')) {
+            hideSidebarImmediately();
+            return;
+          }
           toggleFullscreen();
           return;
         }
@@ -1540,9 +1560,7 @@
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         setVolumeDelta(-0.05);
-      } 
-      // Category cycling
-      else if (e.key === 'e' || e.key === 'E') {
+      } else if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();
         cycleCountryCategory('EN');
       } else if (e.key === 'f' || e.key === 'F') {
@@ -1568,10 +1586,13 @@
         cycleCountryCategory('SPECIAL');
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        sidebar.classList.toggle('visible');
+        if (isFullscreen()) {
+          sidebar.classList.toggle('visible');
+        }
       }
     });
 
+    // Top Bar Actions
     gate.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleFullscreen();
@@ -1582,7 +1603,12 @@
     fsToggleBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFullscreen(); });
     pipBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePictureInPicture(); });
     ccBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleCaptions(); });
-    channelsBtn.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('visible'); });
+    channelsBtn.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      if (isFullscreen()) {
+        sidebar.classList.toggle('visible'); 
+      }
+    });
     playPauseBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlayPause(); });
     prevChBtn.addEventListener('click', (e) => { e.stopPropagation(); browseChannel(-1); });
     nextChBtn.addEventListener('click', (e) => { e.stopPropagation(); browseChannel(1); });
