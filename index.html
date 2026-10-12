@@ -537,9 +537,9 @@
        ========================================================= */
 
     /* 1. MOBILE PORTRAIT MODE:
-       - Video pinned right at top (no bars above it)
-       - Top bar in 2 rows placed right below video
-       - Channel list occupies remaining bottom space with all channels visible
+       - Video pinned topmost
+       - 2-Row Grid controls directly below
+       - Channel list fills all remaining bottom space
     */
     @media (orientation: portrait) and (max-width: 900px) {
       #app {
@@ -562,6 +562,7 @@
       .video-viewport {
         width: 100% !important;
         height: auto !important;
+        justify-content: center !important;
       }
 
       .video-ratio-box {
@@ -577,10 +578,10 @@
         transform: none !important;
         opacity: 1 !important;
         height: auto !important;
-        padding: 4px 6px !important;
+        padding: 6px 8px !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 4px !important;
+        gap: 6px !important;
         border-top: 1px solid var(--border);
         border-bottom: 1px solid var(--border);
       }
@@ -592,28 +593,42 @@
         justify-content: space-between;
       }
 
-      .top-row-2 {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+      .np-title {
+        max-width: 220px;
+        font-size: 0.78rem;
       }
 
-      .top-controls {
-        gap: 3px;
-        flex-wrap: nowrap;
+      .top-row-2 {
         width: 100%;
-        justify-content: space-between;
+      }
+
+      /* 2-Row Clean Control Grid in Portrait */
+      .top-controls {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 5px !important;
+        width: 100% !important;
       }
 
       .top-controls .action-btn {
-        height: 26px;
-        padding: 0 5px;
-        font-size: 0.65rem;
+        width: 100% !important;
+        height: 30px !important;
+        padding: 0 4px !important;
+        font-size: 0.68rem !important;
       }
 
       .top-controls .vol-group {
-        padding: 1px 3px;
+        grid-column: span 2;
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 4px;
+      }
+
+      .top-controls .vol-indicator {
+        min-width: 32px;
+        font-size: 0.68rem;
       }
 
       .sidebar {
@@ -625,105 +640,148 @@
       }
 
       .sidebar-header {
-        height: 18px;
+        height: 20px;
         padding: 0 6px;
-        font-size: 0.58rem;
+        font-size: 0.60rem;
       }
     }
 
-    /* 2. MOBILE LANDSCAPE (Windowed & Fullscreen Unified):
-       - Full height 16:9 video pinned leftmost
-       - Next is the topbar controls arranged in two vertical columns
-       - Next is the channel list using all remaining right space
-       - Zero scrolling: all channels visible
+    /* 2. MOBILE LANDSCAPE (Controls Left + Video Center + Channels Right):
+       - Topbar vertically justified on the left
+       - 16:9 Video centered between them
+       - Full height channels on the right with zero scrolling
     */
     @media (orientation: landscape) and (max-height: 600px), (orientation: landscape) and (max-width: 950px) {
-      #app {
+      #app,
+      #app:fullscreen,
+      #app:-webkit-full-screen {
         flex-direction: row !important;
       }
 
-      .stage {
-        flex-direction: row !important;
-        width: 100% !important;
-        height: 100% !important;
-      }
-
-      .player-section {
-        flex: 0 0 auto !important;
-        width: auto !important;
-        height: 100% !important;
-      }
-
-      .video-viewport {
-        width: auto !important;
-        height: 100% !important;
-        justify-content: flex-start !important;
-      }
-
-      .video-ratio-box {
-        height: 100% !important;
-        width: calc(100vh * (16 / 9)) !important;
-        max-width: calc(100vw - 220px) !important;
-        aspect-ratio: 16 / 9 !important;
-      }
-
-      /* Topbar rendered as two compact vertical columns */
-      .unified-top-bar {
+      /* Controls placed on left of video */
+      .unified-top-bar,
+      #app:fullscreen .unified-top-bar,
+      #app:-webkit-full-screen .unified-top-bar {
+        order: 1 !important;
         position: static !important;
         transform: none !important;
         opacity: 1 !important;
-        width: 110px !important;
+        width: 96px !important;
         height: 100% !important;
-        padding: 4px !important;
+        padding: 6px 4px !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: flex-start !important;
-        gap: 6px !important;
+        justify-content: space-between !important; /* Adjusted vertically */
+        gap: 4px !important;
         border-bottom: none !important;
         border-right: 1px solid var(--border);
-        overflow-y: auto;
+        overflow: hidden;
       }
 
       .top-row-1 {
         width: 100%;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+        align-items: center;
+        text-align: center;
+        gap: 2px;
+      }
+
+      .np-info {
+        flex-direction: column;
+        gap: 2px;
       }
 
       .np-title {
-        max-width: 90px;
-        font-size: 0.70rem;
+        max-width: 86px;
+        font-size: 0.68rem;
+        text-align: center;
+      }
+
+      .np-category {
+        display: none; /* Hide subtitle to preserve vertical height */
       }
 
       .top-row-2 {
         width: 100%;
+        flex: 1 1 auto;
         display: flex;
         flex-direction: column;
+        justify-content: space-evenly; /* Smooth vertical distribution */
       }
 
       .top-controls {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr; /* Two clean columns */
-        gap: 4px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-evenly !important;
+        height: 100% !important;
         width: 100% !important;
+        gap: 3px !important;
       }
 
       .top-controls .action-btn {
-        height: 26px !important;
+        width: 100% !important;
+        height: 24px !important;
         padding: 0 2px !important;
         font-size: 0.62rem !important;
       }
 
       .top-controls .vol-group {
-        grid-column: span 2;
         width: 100%;
-        justify-content: space-around;
-        padding: 1px;
+        height: 24px;
+        justify-content: space-between;
+        padding: 0 2px;
       }
 
-      .sidebar {
-        border-left: none !important;
+      .top-controls .vol-indicator {
+        min-width: 24px;
+        font-size: 0.60rem;
+      }
+
+      .stage,
+      #app:fullscreen .stage,
+      #app:-webkit-full-screen .stage {
+        order: 2 !important;
+        flex-direction: row !important;
+        flex: 1 1 0% !important;
+        width: auto !important;
+        height: 100% !important;
+        display: flex !important;
+      }
+
+      .player-section,
+      #app:fullscreen .player-section,
+      #app:-webkit-full-screen .player-section {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        height: 100% !important;
+      }
+
+      .video-viewport,
+      #app:fullscreen .video-viewport,
+      #app:-webkit-full-screen .video-viewport {
+        width: auto !important;
+        height: 100% !important;
+        justify-content: center !important;
+      }
+
+      .video-ratio-box,
+      #app:fullscreen .video-ratio-box,
+      #app:-webkit-full-screen .video-ratio-box {
+        height: 100% !important;
+        width: calc(100vh * (16 / 9)) !important;
+        max-width: calc(100vw - 230px) !important;
+        aspect-ratio: 16 / 9 !important;
+      }
+
+      /* Channels fully visible on right */
+      .sidebar,
+      #app:fullscreen .sidebar,
+      #app:-webkit-full-screen .sidebar {
+        position: static !important;
+        transform: none !important;
+        box-shadow: none !important;
+        pointer-events: auto !important;
+        border-left: 1px solid var(--border) !important;
         flex: 1 1 0% !important;
         width: auto !important;
         height: 100% !important;
@@ -734,7 +792,7 @@
       }
 
       .channel-list {
-        padding: 2px 3px !important;
+        padding: 1px 3px !important;
       }
     }
   </style>
@@ -885,7 +943,7 @@
         </div>
       </section>
 
-      <!-- Sidebar (occupies remaining space on desktop/mobile) -->
+      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header" id="channelCount">Channels</div>
         <div class="channel-list" id="channelList"></div>
@@ -911,6 +969,7 @@
       bfm: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%230055a5'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EBFMTV%3C/text%3E%3C/svg%3E`,
       bfmbiz: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002244'/%3E%3Ctext x='50' y='26' fill='%2300aaff' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3EBFM BIZ%3C/text%3E%3C/svg%3E`,
       negocios: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23111'/%3E%3Ctext x='50' y='25' fill='%2300ff88' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3ENegocios%3C/text%3E%3C/svg%3E`,
+      daserste: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%2300305e'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ctext x='50' y='26' fill='%2300305e' font-family='sans-serif' font-weight='bold' font-size='17' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E`,
       zdf: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23fa7d19'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EZDF%3C/text%3E%3C/svg%3E`,
       wdr: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3EWDR%3C/text%3E%3C/svg%3E`,
       prosieben: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='22' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E`,
@@ -980,6 +1039,7 @@
         url: "https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8",
         pinnedTop: true 
       },
+      { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://live2.ard-mcdn.de/daserste/live/hls/de/master.m3u8" },
       { country: "DE", id: "ProSieben.de", name: "ProSieben", group: "General", logo: LOGOS.prosieben, url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" },
       { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
       { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
@@ -1468,10 +1528,20 @@
 
       if (!isFullscreen()) {
         const target = appContainer;
-        if (target.requestFullscreen) target.requestFullscreen().catch(() => {});
-        else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
-        else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+        const req = target.requestFullscreen || target.webkitRequestFullscreen;
+        if (req) {
+          req.call(target).then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock('landscape').catch(() => {});
+            }
+          }).catch(() => {});
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
       } else {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
@@ -1498,8 +1568,8 @@
         }
       }, 2500);
 
-      // Top bar reveal in fullscreen
-      if (isFullscreen()) {
+      // Desktop fullscreen top bar auto-hide
+      if (isFullscreen() && windowWidth > 900) {
         if (e.clientY <= 50 || unifiedTopBar.matches(':hover')) {
           unifiedTopBar.classList.add('reveal-top');
         } else {
@@ -1507,8 +1577,8 @@
         }
       }
 
-      // Sidebar drawer hover trigger ONLY when in fullscreen
-      if (isFullscreen()) {
+      // Desktop fullscreen sidebar hover drawer
+      if (isFullscreen() && windowWidth > 900) {
         const sidebarWidth = 220;
         const triggerThreshold = sidebarWidth / 2;
 
@@ -1528,7 +1598,7 @@
     }
 
     function scheduleHideSidebar() {
-      if (!isFullscreen()) return;
+      if (!isFullscreen() || window.innerWidth <= 900) return;
       clearTimeout(sidebarHideTimeout);
       sidebarHideTimeout = setTimeout(() => {
         sidebar.classList.remove('visible');
@@ -1536,7 +1606,7 @@
     }
 
     function hideSidebarImmediately() {
-      if (!isFullscreen()) return;
+      if (!isFullscreen() || window.innerWidth <= 900) return;
       clearTimeout(sidebarHideTimeout);
       sidebar.classList.remove('visible');
     }
@@ -1545,20 +1615,23 @@
       if (e.target.closest('#fullscreen-gate') || e.target.closest('#sidebar')) {
         return;
       }
-      if (isFullscreen() && sidebar.classList.contains('visible')) {
+      if (isFullscreen() && window.innerWidth > 900 && sidebar.classList.contains('visible')) {
         hideSidebarImmediately();
       }
     });
 
     window.addEventListener('mousemove', handleMouseMove);
-    sidebar.addEventListener('mouseenter', () => { if (isFullscreen()) showSidebar(); });
-    sidebar.addEventListener('mouseleave', () => { if (isFullscreen()) scheduleHideSidebar(); });
+    sidebar.addEventListener('mouseenter', () => { if (isFullscreen() && window.innerWidth > 900) showSidebar(); });
+    sidebar.addEventListener('mouseleave', () => { if (isFullscreen() && window.innerWidth > 900) scheduleHideSidebar(); });
 
     document.addEventListener('fullscreenchange', () => {
       if (!isFullscreen()) {
         unifiedTopBar.classList.remove('reveal-top');
         appContainer.classList.remove('hide-cursor');
         sidebar.classList.remove('visible');
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
       }
       setTimeout(adjustChannelRowSizes, 100);
     });
@@ -1572,7 +1645,7 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (isFullscreen()) {
-          if (sidebar.classList.contains('visible')) {
+          if (window.innerWidth > 900 && sidebar.classList.contains('visible')) {
             hideSidebarImmediately();
             return;
           }
@@ -1653,7 +1726,7 @@
         cycleCountryCategory('SPECIAL');
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        if (isFullscreen()) {
+        if (isFullscreen() && window.innerWidth > 900) {
           sidebar.classList.toggle('visible');
         }
       }
@@ -1672,7 +1745,7 @@
     ccBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleCaptions(); });
     channelsBtn.addEventListener('click', (e) => { 
       e.stopPropagation(); 
-      if (isFullscreen()) {
+      if (isFullscreen() && window.innerWidth > 900) {
         sidebar.classList.toggle('visible'); 
       }
     });
