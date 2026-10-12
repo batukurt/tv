@@ -487,14 +487,7 @@
       opacity: 1;
     }
 
-    /* =========================================================
-       MOBILE SPECIFIC DEDICATED LAYOUTS
-       ========================================================= */
-
-    /* 1. MOBILE LANDSCAPE MODE:
-       - Video pinned leftmost and uses full height
-       - Remainder on the right is dedicated to the channel list
-    */
+    /* Mobile Landscape */
     @media (orientation: landscape) and (max-height: 500px), (orientation: landscape) and (max-width: 950px) {
       .unified-top-bar {
         display: none !important;
@@ -547,11 +540,7 @@
       }
     }
 
-    /* 2. MOBILE PORTRAIT MODE:
-       - Top bar divided into clean rows
-       - Video pinned right below top bar (16:9 fixed)
-       - Channel list starts right below video, zero scroll
-    */
+    /* Mobile Portrait */
     @media (orientation: portrait) and (max-width: 768px) {
       #app {
         flex-direction: column !important;
@@ -741,7 +730,7 @@
           <polygon points="34,20 39,22 37,17 40,14 35,15 33,11 32,16 27,16 31,19 29,24" fill="#fff"/>
         </svg>
       </g>
-      <!-- Zimbabwe Flag (Special Category - Z) -->
+      <!-- Zimbabwe -->
       <g id="flag-zw">
         <svg viewBox="0 0 60 40" width="15" height="10">
           <rect width="60" height="5.71" fill="#319241"/>
@@ -751,9 +740,7 @@
           <rect y="22.87" width="60" height="5.71" fill="#de2010"/>
           <rect y="28.58" width="60" height="5.71" fill="#ffd200"/>
           <rect y="34.29" width="60" height="5.71" fill="#319241"/>
-          <!-- White triangle with black border -->
           <polygon points="0,0 24,20 0,40" fill="#ffffff" stroke="#000000" stroke-width="1"/>
-          <!-- Red 5-pointed star -->
           <polygon points="8,15 9.8,20.5 15,20.5 10.8,23.5 12.4,28.5 8,25.5 3.6,28.5 5.2,23.5 1,20.5 6.2,20.5" fill="#de2010"/>
         </svg>
       </g>
@@ -815,7 +802,7 @@
           <div id="toastMessage" class="toast-msg"></div>
         </div>
 
-        <!-- Channel sidebar: adapts to desktop drawer or docked mobile panel -->
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
           <div class="sidebar-header" id="channelCount">Channels</div>
           <div class="channel-list" id="channelList"></div>
@@ -839,33 +826,27 @@
     const LOGOS = {
       bloomberg: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3EBloomberg%3C/text%3E%3C/svg%3E`,
       cnbc: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='18' text-anchor='middle'%3ECNBC%3C/text%3E%3C/svg%3E`,
-      tf1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='50' height='40' fill='%23002f6c'/%3E%3Crect x='50' width='50' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='20' text-anchor='middle'%3ETF1%3C/text%3E%3C/svg%3E`,
-      lci: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002f6c'/%3E%3Crect y='32' width='100' height='8' fill='%23e2001a'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3ELCI%3C/text%3E%3C/svg%3E`,
       bfm: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%230055a5'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EBFMTV%3C/text%3E%3C/svg%3E`,
       bfmbiz: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002244'/%3E%3Ctext x='50' y='26' fill='%2300aaff' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3EBFM BIZ%3C/text%3E%3C/svg%3E`,
-      cnews: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNEWS%3C/text%3E%3C/svg%3E`,
       negocios: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23111'/%3E%3Ctext x='50' y='25' fill='%2300ff88' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3ENegocios%3C/text%3E%3C/svg%3E`,
-      daserste: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%2300305e'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ctext x='50' y='26' fill='%2300305e' font-family='sans-serif' font-weight='bold' font-size='17' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E`,
+      ntv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c00'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3En-tv%3C/text%3E%3C/svg%3E`,
       zdf: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23fa7d19'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EZDF%3C/text%3E%3C/svg%3E`,
       wdr: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3EWDR%3C/text%3E%3C/svg%3E`,
       prosieben: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='22' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E`,
-      ntv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c00'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3En-tv%3C/text%3E%3C/svg%3E`,
       rtl: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002f6c'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3ERTL%3C/text%3E%3C/svg%3E`,
+      cnews: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNEWS%3C/text%3E%3C/svg%3E`,
       rai1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23004b97'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3ERai 1%3C/text%3E%3C/svg%3E`,
       rai3: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23008055'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3ERai 3%3C/text%3E%3C/svg%3E`,
       trt1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETRT 1%3C/text%3E%3C/svg%3E`,
       atv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23f15a24'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3Eatv%3C/text%3E%3C/svg%3E`,
-      kanald: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002b66'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ccircle cx='50' cy='20' r='6' fill='%23002b66'/%3E%3C/svg%3E`,
-      ntvtr: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23000'/%3E%3Ctext x='50' y='27' fill='%23f00' font-family='sans-serif' font-weight='900' font-size='20' text-anchor='middle'%3ENTV%3C/text%3E%3C/svg%3E`,
       haberturk: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23b20000'/%3E%3Ctext x='50' y='25' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='13' text-anchor='middle'%3EHABERTURK%3C/text%3E%3C/svg%3E`,
       bloomberght: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23222'/%3E%3Ctext x='50' y='25' fill='%23ff9900' font-family='sans-serif' font-weight='bold' font-size='13' text-anchor='middle'%3EBLOOMBERG HT%3C/text%3E%3C/svg%3E`,
       cnbce: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002855'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNBC-e%3C/text%3E%3C/svg%3E`,
       tgrt: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23cc0000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETGRT%3C/text%3E%3C/svg%3E`,
-      tele1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23d60000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETELE 1%3C/text%3E%3C/svg%3E`,
       halktv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e60000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3EHALK TV%3C/text%3E%3C/svg%3E`,
       ftv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23000'/%3E%3Ctext x='50' y='27' fill='%23f59e0b' font-family='sans-serif' font-weight='900' font-size='17' text-anchor='middle'%3EFTV%3C/text%3E%3C/svg%3E`,
-      cars: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%231e293b'/%3E%3Ctext x='50' y='26' fill='%2338bdf8' font-family='sans-serif' font-weight='900' font-size='15' text-anchor='middle'%3EAUTOS%3C/text%3E%3C/svg%3E`,
-      kardiosis: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Crect width='240' height='80' fill='%23ffffff'/%3E%3Cline x1='14' y1='10' x2='14' y2='70' stroke='%23707070' stroke-width='3.5'/%3E%3Crect x='22' y='18' width='16' height='14' fill='%23388e89'/%3E%3Crect x='22' y='36' width='16' height='14' fill='%23f5b018'/%3E%3Crect x='22' y='54' width='16' height='14' fill='%237a1f6a'/%3E%3Ctext x='50' y='58' fill='%237a1f6a' font-family='sans-serif' font-size='44' font-weight='bold'%3Ekardiosis%3C/text%3E%3Ccircle cx='222' cy='28' r='7' fill='none' stroke='%237a1f6a' stroke-width='1.5'/%3E%3Ctext x='222' y='31.5' fill='%237a1f6a' font-family='Arial, sans-serif' font-size='8' font-weight='bold' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E`
+      topgear: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%231e293b'/%3E%3Ctext x='50' y='26' fill='%2338bdf8' font-family='sans-serif' font-weight='900' font-size='15' text-anchor='middle'%3EAUTOS%3C/text%3E%3C/svg%3E`,
+      traceurban: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Crect width='240' height='80' fill='%23ffffff'/%3E%3Cline x1='14' y1='10' x2='14' y2='70' stroke='%23707070' stroke-width='3.5'/%3E%3Crect x='22' y='18' width='16' height='14' fill='%23388e89'/%3E%3Crect x='22' y='36' width='16' height='14' fill='%23f5b018'/%3E%3Crect x='22' y='54' width='16' height='14' fill='%237a1f6a'/%3E%3Ctext x='50' y='58' fill='%237a1f6a' font-family='sans-serif' font-size='44' font-weight='bold'%3Etraceurban%3C/text%3E%3Ccircle cx='222' cy='28' r='7' fill='none' stroke='%237a1f6a' stroke-width='1.5'/%3E%3Ctext x='222' y='31.5' fill='%237a1f6a' font-family='Arial, sans-serif' font-size='8' font-weight='bold' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E`
     };
 
     const CHANNELS = [
@@ -893,41 +874,15 @@
       },
       { country: "EN", id: "CNBCUK.uk", name: "CNBC UK", group: "Business", logo: LOGOS.cnbc, url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8" },
 
-      // France (Alphabetical)
-      { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
+      // France
+      { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMBusiness.fr", name: "BFM Business", group: "Business", logo: LOGOS.bfmbiz, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTechCo.fr", name: "BFM Tech & Co", group: "Science", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TECHANDCO/index.m3u8?end=END&start=LIVE" },
-      { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
-      { country: "FR", id: "CNews.fr", name: "CNews", group: "News", logo: LOGOS.cnews, url: "https://www.dailymotion.com/cdn/live/video/x91c8ww.m3u8?sec=D9OwEfHs-e7O6pQ-qlnROg" },
-      { 
-        country: "FR", 
-        id: "LCI.fr", 
-        name: "LCI", 
-        group: "News", 
-        logo: LOGOS.lci, 
-        urls: [
-          "https://lci-live-p2.tf1.fr/lci/1/hls/live_2500.m3u8",
-          "https://lci-live.tf1.fr/lci/1/hls/live_2500.m3u8",
-          "https://tf1-hls-live-ssl.tf1.fr/lci/1/hls/live_2500.m3u8"
-        ],
-        url: "https://lci-live-p2.tf1.fr/lci/1/hls/live_2500.m3u8" 
-      },
-      { 
-        country: "FR", 
-        id: "TF1.fr", 
-        name: "TF1", 
-        group: "General", 
-        logo: LOGOS.tf1, 
-        urls: [
-          "https://tf1-hls-live-ssl.tf1.fr/tf1/1/hls/live_2500.m3u8",
-          "https://tf1-live-p2.tf1.fr/tf1/1/hls/live_2500.m3u8"
-        ],
-        url: "https://tf1-hls-live-ssl.tf1.fr/tf1/1/hls/live_2500.m3u8" 
-      },
-
-      // Spain (Alphabetical)
+      { country: "FR", id: "BFM2.fr", name: "BFM 2", group: "News", logo: LOGOS.bfm, url: "https://d1ib1gsg71oarf.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-scp7wda722jph/BFM2_FR.m3u8" },
+      
+      // Spain
       { country: "ES", id: "NegociosTV.es", name: "Negocios TV", group: "Business", logo: LOGOS.negocios, url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" },
-
+      
       // Germany (n-tv at top, remainder Alphabetical)
       { 
         country: "DE", 
@@ -942,16 +897,16 @@
         url: "https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8",
         pinnedTop: true 
       },
-      { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://live2.ard-mcdn.de/daserste/live/hls/de/master.m3u8" },
       { country: "DE", id: "ProSieben.de", name: "ProSieben", group: "General", logo: LOGOS.prosieben, url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" },
       { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
       { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
-
-      // Luxembourg (Alphabetical)
+      
+      // Luxembourg
       { country: "LU", id: "RTLTeleLetzebuerg1.lu", name: "RTL Télé Lëtzebuerg 1", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8" },
       { country: "LU", id: "RTLTeleLetzebuerg2.lu", name: "RTL Télé Lëtzebuerg 2", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8" },
 
-      // Italy (Alphabetical)
+      // Italy (Alphabetical - CNews moved here)
+      { country: "IT", id: "CNews", name: "CNews", group: "News", logo: LOGOS.cnews, url: "https://www.dailymotion.com/cdn/live/video/x91c8ww.m3u8?sec=D9OwEfHs-e7O6pQ-qlnROg" },
       { country: "IT", id: "RaiUno.it", name: "Rai 1", group: "General", logo: LOGOS.rai1, url: "https://dash2.antik.sk/live/test_rai_uno_tizen/playlist.m3u8" },
       { country: "IT", id: "RaiTre.it", name: "Rai 3", group: "General", logo: LOGOS.rai3, url: "https://dash2.antik.sk/live/test_rai_tre_tizen/playlist.m3u8" },
 
@@ -960,12 +915,9 @@
       { country: "TR", id: "CNBCe.tr", name: "CNBC-e", group: "Business;Series", logo: LOGOS.cnbce, url: "https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8" },
       { country: "TR", id: "TRT1.tr", name: "TRT 1", group: "General", logo: LOGOS.trt1, url: "https://tv-trt1.medya.trt.com.tr/master.m3u8" },
       { country: "TR", id: "ATV.tr", name: "ATV (Turkiye)", group: "General", logo: LOGOS.atv, url: "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/atv/atv_1080p.m3u8" },
-      { country: "TR", id: "KanalD.tr", name: "Kanal D", group: "General", logo: LOGOS.kanald, url: "https://demiroren.daioncdn.net/kanald/kanald.m3u8?app=kanald_web&ce=3" },
       { country: "TR", id: "Haberturk.tr", name: "Habertürk", group: "News", logo: LOGOS.haberturk, url: "https://tv.ensonhaber.com/haberturk/haberturk.m3u8" },
       { country: "TR", id: "HalkTV.tr", name: "Halk TV", group: "News", logo: LOGOS.halktv, url: "https://halktv-live.daioncdn.net/halktv/halktv.m3u8" },
-      { country: "TR", id: "NTV.tr", name: "NTV", group: "News", logo: LOGOS.ntvtr, url: "https://dogus.daioncdn.net/ntv/ntv.m3u8?app=ntv_web" },
       { country: "TR", id: "TGRTHaber.tr", name: "TGRT Haber", group: "News", logo: LOGOS.tgrt, url: "https://canli.tgrthaber.com/tgrt.m3u8" },
-      { country: "TR", id: "Tele1.tr", name: "Tele 1", group: "News", logo: LOGOS.tele1, url: "https://tele1-live.ercdn.net/tele1/tele1.m3u8" },
 
       // Special / Zimbabwe Category (Shortcut: Z)
       { 
@@ -994,7 +946,7 @@
         id: "HipHop.special", 
         name: "HipHop", 
         group: "Music & Special", 
-        logo: LOGOS.kardiosis, 
+        logo: LOGOS.traceurban, 
         url: "https://channels.trace.plus/Traceprod/URBAN_INTER_hd/index.m3u8"
       },
       {
@@ -1008,18 +960,6 @@
           "https://gsn-cinevault-westerns-2-us.roku.wurl.tv/playlist.m3u8"
         ],
         url: "https://amg01079-cinevault-cinevaultwesterns-rokuus-1033.playouts.now.amagi.tv/playlist/amg01079-cinevault-cinevaultwesterns-rokuus/playlist.m3u8"
-      },
-      {
-        country: "SPECIAL",
-        id: "AutosStream.special",
-        name: "Autos",
-        group: "Automotive",
-        logo: LOGOS.cars,
-        urls: [
-          "https://amg01079-motorvision-motorvisionfast-samsungus-1811.playouts.now.amagi.tv/playlist/amg01079-motorvision-motorvisionfast-samsungus/playlist.m3u8",
-          "https://powernation-powernation-1-us.samsung.wurl.tv/playlist.m3u8"
-        ],
-        url: "https://amg01079-motorvision-motorvisionfast-samsungus-1811.playouts.now.amagi.tv/playlist/amg01079-motorvision-motorvisionfast-samsungus/playlist.m3u8"
       },
       {
         country: "SPECIAL",
@@ -1171,11 +1111,10 @@
       });
     }
 
-    // Dynamic height calculation so all items fit cleanly without any scrollbar
     function adjustChannelRowSizes() {
       const containerHeight = channelListEl.clientHeight;
-      const totalItems = channelListEl.querySelectorAll('.channel-item:not([style*="display: none"])').length;
-      const totalDividers = channelListEl.querySelectorAll('.flag-divider:not([style*="display: none"])').length;
+      const totalItems = channelListEl.querySelectorAll('.channel-item').length;
+      const totalDividers = channelListEl.querySelectorAll('.flag-divider').length;
 
       if (totalItems > 0 && containerHeight > 0) {
         const dividerSpace = totalDividers * 15;
@@ -1186,7 +1125,6 @@
       }
     }
 
-    // Render channels: Flag only headers, alphabetical for all groups except TR and SPECIAL; n-tv at top of DE
     function renderChannels() {
       channelListEl.innerHTML = '';
       let totalMatched = 0;
@@ -1362,7 +1300,6 @@
       loadChannel(nextIndex);
     }
 
-    // Step sequentially through channels belonging to the specified country category
     function cycleCountryCategory(countryCode) {
       const countryIndices = [];
       CHANNELS.forEach((ch, idx) => {
@@ -1443,7 +1380,6 @@
       return Boolean(document.fullscreenElement || document.webkitFullscreenElement);
     }
 
-    // Unified Toggle Fullscreen (Root App Container)
     function toggleFullscreen() {
       video.muted = false;
 
@@ -1479,7 +1415,6 @@
         }
       }, 2500);
 
-      // Top bar reveal on desktop fullscreen
       if (isFullscreen() && windowWidth > 900) {
         if (e.clientY <= 50 || unifiedTopBar.matches(':hover')) {
           unifiedTopBar.classList.add('reveal-top');
@@ -1488,7 +1423,6 @@
         }
       }
 
-      // Sidebar drawer hover trigger on desktop
       if (windowWidth > 900) {
         const sidebarWidth = 220;
         const triggerThreshold = sidebarWidth / 2;
@@ -1548,7 +1482,6 @@
       setTimeout(adjustChannelRowSizes, 150);
     });
 
-    // Keyboard Shortcuts Dispatcher
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (sidebar.classList.contains('visible') && window.innerWidth > 900) {
@@ -1561,7 +1494,6 @@
         }
       }
 
-      // F11 & Enter triggered fullscreen unification
       if (e.key === 'F11' || e.key === 'Enter') {
         e.preventDefault();
         if (gate.style.display !== 'none') {
@@ -1572,35 +1504,30 @@
         return;
       }
 
-      // Subtitles / Captions Shortcut (-)
       if (e.key === '-' || e.key === '_') {
         e.preventDefault();
         toggleCaptions();
         return;
       }
 
-      // Play / Pause (Space)
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlayPause();
         return;
       }
 
-      // Picture-in-Picture (P)
       if (e.key === 'p' || e.key === 'P') {
         e.preventDefault();
         togglePictureInPicture();
         return;
       }
 
-      // Mute (M)
       if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
         toggleMute();
         return;
       }
 
-      // Channel browsing
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         browseChannel(-1);
@@ -1614,7 +1541,7 @@
         e.preventDefault();
         setVolumeDelta(-0.05);
       } 
-      // Sequential category cycling (E, F, S, D/G, L, I/İ, T, Z)
+      // Category cycling
       else if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();
         cycleCountryCategory('EN');
@@ -1645,7 +1572,6 @@
       }
     });
 
-    // Top Bar Button Bindings
     gate.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleFullscreen();
