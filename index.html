@@ -7,8 +7,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0b0d13">
   <title>AFL TV</title>
- <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     :root {
       --bg-base: #0b0d13;
@@ -694,7 +694,7 @@
     <header>
       <div class="brand">
         <div class="live-dot"></div>
-        01-05
+        AFL TV
       </div>
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search channels (Esc to unfocus)..." autocomplete="off">
@@ -767,7 +767,8 @@
             <button class="action-btn" id="nextChBtn"><span class="btn-kbd">▶</span>Next ▶ </button>
 
             <!-- Bottom Volume Controls & Live % Indicator -->
-            <div class="vol-group"><span class="btn-kbd">▼</span>
+            <div class="vol-group">
+              <span class="btn-kbd">▼</span>
               <button class="action-btn btn-sm" id="volDownBtn" title="Volume Down [▼]">🔉 -</button>
               <div class="vol-indicator" id="volDisplay" title="Click to Mute/Unmute [M]">100%</div>
               <button class="action-btn btn-sm" id="volUpBtn" title="Volume Up [▲]">🔊 +<span class="btn-kbd">▲</span></button>
@@ -824,12 +825,32 @@
       tgrt: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23cc0000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETGRT%3C/text%3E%3C/svg%3E`,
       tele1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23d60000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETELE 1%3C/text%3E%3C/svg%3E`,
       halktv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e60000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3EHALK TV%3C/text%3E%3C/svg%3E`,
-      kardiosis: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Crect width='240' height='80' fill='%23ffffff'/%3E%3Cline x1='14' y1='10' x2='14' y2='70' stroke='%23707070' stroke-width='3.5'/%3E%3Crect x='22' y='18' width='16' height='14' fill='%23388e89'/%3E%3Crect x='22' y='36' width='16' height='14' fill='%23f5b018'/%3E%3Crect x='22' y='54' width='16' height='14' fill='%237a1f6a'/%3E%3Ctext x='50' y='58' fill='%237a1f6a' font-family='sans-serif' font-size='44' font-weight='bold'%3Ekardiosis%3C/text%3E%3Ccircle cx='222' cy='28' r='7' fill='none' stroke='%237a1f6a' stroke-width='1.5'/%3E%3Ctext x='222' y='31.5' fill='%237a1f6a' font-family='sans-serif' font-size='8' font-weight='bold' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E`
+      kardiosis: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Crect width='240' height='80' fill='%23ffffff'/%3E%3Cline x1='14' y1='10' x2='14' y2='70' stroke='%23707070' stroke-width='3.5'/%3E%3Crect x='22' y='18' width='16' height='14' fill='%23388e89'/%3E%3Crect x='22' y='36' width='16' height='14' fill='%23f5b018'/%3E%3Crect x='22' y='54' width='16' height='14' fill='%237a1f6a'/%3E%3Ctext x='50' y='58' fill='%237a1f6a' font-family='sans-serif' font-size='44' font-weight='bold'%3Ekardiosis%3C/text%3E%3Ccircle cx='222' cy='28' r='7' fill='none' stroke='%237a1f6a' stroke-width='1.5'/%3E%3Ctext x='222' y='31.5' fill='%237a1f6a' font-family='Arial, sans-serif' font-size='8' font-weight='bold' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E`
     };
 
     const CHANNELS = [
-      // English
-      { country: "EN", id: "BloombergTV.us", name: "Bloomberg TV+", group: "Business", logo: LOGOS.bloomberg, url: "https://d8975dc3.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9CbG9vbWJlcmdUVlBsdXNfSExT/playlist.m3u8" },
+      // English - Bloomberg TV+ with automatic fallback & highest-resolution probing
+      { 
+        country: "EN", 
+        id: "BloombergTV.us", 
+        name: "Bloomberg TV+", 
+        group: "Business", 
+        logo: LOGOS.bloomberg, 
+        urls: [
+          "https://bloomberg-bloombergtv-1-eu.rakuten.wurl.tv/playlist.m3u8",
+          "https://66e4bbba.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfQmxvb21iZXJnVFZQbHVzX0hMUw/playlist.m3u8",
+          "https://d2d98ykcmmhgd4.cloudfront.net/v1/bloomberg_bloombergtv_2/samsungheadend_us/latest/main/hls/playlist.m3u8",
+          "https://d8975dc3.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9CbG9vbWJlcmdUVlBsdXNfSExT/playlist.m3u8",
+          "https://jmp2.uk/plu-61de8d4b8acf6c0007f1c2f3.m3u8",
+          "https://jmp2.uk/plu-61de8fa251cca800076dde41.m3u8",
+          "https://jmp2.uk/plu-54ff7ba69222cb1c2624c584.m3u8",
+          "https://jmp2.uk/plu-61de991729cd4a00079f812b.m3u8",
+          "https://jmp2.uk/plu-62b976b93279cb000772c6f9.m3u8",
+          "https://jmp2.uk/plu-61559552dd585f0007321eca.m3u8",
+          "https://bloomberg.com/media-manifest/streams/phoenix-us.m3u8"
+        ],
+        url: "https://bloomberg-bloombergtv-1-eu.rakuten.wurl.tv/playlist.m3u8" 
+      },
       { country: "EN", id: "CNBCUK.uk", name: "CNBC UK", group: "Business;News", logo: LOGOS.cnbc, url: "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8" },
 
       // France
@@ -842,10 +863,11 @@
       { country: "ES", id: "NegociosTV.es", name: "Negocios TV", group: "Business", logo: LOGOS.negocios, url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" },
 
       // Germany
-      { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://daserste-live.ard-mcdn.de/daserste/live/hls/int/master.m3u8" },
+      { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://live2.ard-mcdn.de/daserste/live/hls/de/master.m3u8" },
       { country: "DE", id: "ProSieben.de", name: "ProSieben", group: "General", logo: LOGOS.prosieben, url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" },
       { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
       { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
+
       // Luxembourg
       { country: "LU", id: "RTLTeleLetzebuerg1.lu", name: "RTL Télé Lëtzebuerg 1", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8" },
       { country: "LU", id: "RTLTeleLetzebuerg2.lu", name: "RTL Télé Lëtzebuerg 2", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8" },
@@ -874,7 +896,7 @@
         name: "Akşam Sefası", 
         group: "Music & Special", 
         logo: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%236b21a8'/%3E%3Ctext x='50' y='18' fill='%23fef08a' font-family='sans-serif' font-weight='bold' font-size='11' text-anchor='middle'%3EAKŞAM%3C/text%3E%3Ctext x='50' y='32' fill='%23ffffff' font-family='sans-serif' font-weight='900' font-size='12' letter-spacing='1' text-anchor='middle'%3ESEFASI%3C/text%3E%3C/svg%3E`, 
-        url: "https://tv-trtmuzik.medya.trt.com.tr/master.m3u8", 
+        url: "https://tv-trtmuzik.medya.trt.com.tr/master.m3u8"
       },
       { 
         country: "SPECIAL", 
@@ -882,16 +904,16 @@
         name: "ŞakŞak TV", 
         group: "Music & Special", 
         logo: LOGOS.kardiosis, 
-        url: "https://channels.trace.plus/Traceprod/URBAN_INTER_hd/index.m3u8",  
+        url: "https://channels.trace.plus/Traceprod/URBAN_INTER_hd/index.m3u8"
       },
-	{
-  	country: "SPECIAL",
-  	id: "GrjngoWestern.us",
-  	name: "Pazar Neşesi",
-  	group: "Movies",
-  	logo: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%235c2414'/%3E%3Ctext x='50' y='26' fill='%23f1a323' font-family='serif' font-weight='900' font-size='15' text-anchor='middle'%3EGRJNGO%3C/text%3E%3C/svg%3E`,
-  	url: "https://gsn-cinevault-westerns-2-us.roku.wurl.tv/playlist.m3u8",
-},
+      {
+        country: "SPECIAL",
+        id: "GrjngoWestern.us",
+        name: "Pazar Neşesi",
+        group: "Movies",
+        logo: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%235c2414'/%3E%3Ctext x='50' y='26' fill='%23f1a323' font-family='serif' font-weight='900' font-size='15' text-anchor='middle'%3EGRJNGO%3C/text%3E%3C/svg%3E`,
+        url: "https://b6c7c7d1020a4588982ca7c2625f85d1.mediatailor.us-east-1.amazonaws.com/v1/master/0fb304b2320b25f067414d481a779b77db81760d/RakutenTV-eu_GrjngoWesterny/playlist.m3u8"
+      }
     ];
 
     const video = document.getElementById('videoPlayer');
@@ -932,8 +954,6 @@
     let osdTimeout = null;
     let cursorTimeout = null;
     let sidebarHideTimeout = null;
-
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     function updateVolumeDisplay() {
       if (video.muted) {
@@ -1069,6 +1089,25 @@
       adjustChannelRowSizes();
     }
 
+    // Failover helper: If a stream fails, tries the next candidate URL on that channel
+    function failoverToNextStream(ch) {
+      if (ch.urls && ch.urls.length > 1) {
+        const currIdx = ch.urls.indexOf(ch.url);
+        const nextUrl = ch.urls[(currIdx + 1) % ch.urls.length];
+        if (nextUrl !== ch.url) {
+          ch.url = nextUrl;
+          if (currentHls) {
+            currentHls.loadSource(ch.url);
+          } else {
+            video.src = ch.url;
+            video.play().catch(() => {});
+          }
+          return true;
+        }
+      }
+      return false;
+    }
+
     function loadChannel(index) {
       if (index < 0) index = CHANNELS.length - 1;
       if (index >= CHANNELS.length) index = 0;
@@ -1103,33 +1142,32 @@
       updateActiveItemStyles();
       showOsdBriefly();
 
-      if (video.canPlayType('application/vnd.apple.mpegurl') && isMobile) {
-        if (currentHls) {
-          currentHls.destroy();
-          currentHls = null;
-        }
-        video.src = ch.url;
-        video.play().catch(() => {});
-      } else if (Hls.isSupported()) {
+      // ALWAYS prioritize Hls.js across desktop and Android Chrome (avoids audio-only black screens)
+      if (Hls.isSupported()) {
         if (currentHls) currentHls.destroy();
         currentHls = new Hls({ 
           enableWorker: true, 
           lowLatencyMode: true,
-          capLevelToPlayerSize: true
+          capLevelToPlayerSize: true,
+          backBufferLength: 90
         });
 
         currentHls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
             switch(data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
-                currentHls.startLoad();
+                if (!failoverToNextStream(ch)) {
+                  currentHls.startLoad();
+                }
                 break;
               case Hls.ErrorTypes.MEDIA_ERROR:
                 currentHls.recoverMediaError();
                 break;
               default:
-                currentHls.destroy();
-                browseChannel(1);
+                if (!failoverToNextStream(ch)) {
+                  currentHls.destroy();
+                  browseChannel(1);
+                }
                 break;
             }
           }
@@ -1156,6 +1194,15 @@
 
         currentHls.loadSource(ch.url);
         currentHls.attachMedia(video);
+
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native fallback exclusively for Apple iOS / Safari
+        if (currentHls) {
+          currentHls.destroy();
+          currentHls = null;
+        }
+        video.src = ch.url;
+        video.play().catch(() => {});
       }
     }
 
@@ -1172,24 +1219,53 @@
       loadChannel(nextIndex);
     }
 
+    // Inspects a master playlist to identify its highest advertised height resolution
+    function extractMaxHeightFromPlaylist(text) {
+      const matches = [...text.matchAll(/RESOLUTION=\d+x(\d+)/gi)];
+      if (matches.length > 0) {
+        return Math.max(...matches.map(m => parseInt(m[1], 10)));
+      }
+      return 720;
+    }
+
+    async function probeStreamQuality(url) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const res = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) return { ok: false, height: 0, url };
+        const text = await res.text();
+        return { ok: true, height: extractMaxHeightFromPlaylist(text), url };
+      } catch (err) {
+        return { ok: false, height: 0, url };
+      }
+    }
+
+    // Evaluates stream candidates, selecting the one with the highest quality
     async function validateAllStreams() {
       const probePromises = CHANNELS.map(async (ch) => {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4000);
-          const response = await fetch(ch.url, { 
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-store',
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          ch.isAvailable = response.ok;
-        } catch (err) {
-          ch.isAvailable = false;
-        } finally {
-          ch.validated = true;
+        if (ch.urls && ch.urls.length > 0) {
+          const results = await Promise.all(ch.urls.map(u => probeStreamQuality(u)));
+          const working = results.filter(r => r.ok).sort((a, b) => b.height - a.height);
+          if (working.length > 0) {
+            ch.url = working[0].url;
+            ch.isAvailable = true;
+          } else {
+            ch.isAvailable = false;
+          }
+        } else {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const response = await fetch(ch.url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller.signal });
+            clearTimeout(timeoutId);
+            ch.isAvailable = response.ok;
+          } catch (err) {
+            ch.isAvailable = false;
+          }
         }
+        ch.validated = true;
       });
 
       await Promise.allSettled(probePromises);
@@ -1197,6 +1273,9 @@
 
       if (CHANNELS[activeIndex] && CHANNELS[activeIndex].isAvailable === false) {
         browseChannel(1);
+      } else if (activeIndex === 0) {
+        // Refresh active channel if a higher-quality candidate was selected during boot
+        loadChannel(0);
       }
     }
 
@@ -1206,11 +1285,6 @@
 
     function toggleFullscreen() {
       video.muted = false;
-
-      if (video.webkitEnterFullscreen && isMobile && !document.fullscreenEnabled) {
-        video.webkitEnterFullscreen();
-        return;
-      }
 
       if (!isFullscreen()) {
         const target = playerContainer;
@@ -1352,7 +1426,6 @@
         return;
       }
 
-      // Enter: Start stream / Toggle Fullscreen / Dismiss interaction gate
       if (e.key === 'Enter') {
         e.preventDefault();
         if (gate.style.display !== 'none') {
@@ -1363,21 +1436,18 @@
         return;
       }
 
-      // Space: Dedicated Play / Pause
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlayPause();
         return;
       }
 
-      // M: Dedicated Mute / Unmute
       if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
         toggleMute();
         return;
       }
 
-      // Navigation shortcuts
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         browseChannel(-1);
