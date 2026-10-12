@@ -381,16 +381,7 @@
       pointer-events: none;
     }
 
-    #right-hover-zone {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 30vw;
-      height: 100%;
-      z-index: 60;
-      pointer-events: auto;
-    }
-
+    /* Channels drawer styling */
     .sidebar {
       position: absolute;
       top: 0;
@@ -778,8 +769,6 @@
           </div>
         </div>
 
-        <div id="right-hover-zone"></div>
-
         <aside class="sidebar" id="sidebar">
           <div class="sidebar-header" id="channelCount">Channels</div>
           <div class="channel-list" id="channelList"></div>
@@ -922,7 +911,6 @@
     const gate = document.getElementById('fullscreen-gate');
     const nowPlayingBar = document.getElementById('nowPlayingBar');
     const sidebar = document.getElementById('sidebar');
-    const rightHoverZone = document.getElementById('right-hover-zone');
     const channelListEl = document.getElementById('channelList');
     const searchInput = document.getElementById('searchInput');
     const fsToggleBtn = document.getElementById('fsToggleBtn');
@@ -1089,7 +1077,6 @@
       adjustChannelRowSizes();
     }
 
-    // Failover helper: If a stream fails, tries the next candidate URL on that channel
     function failoverToNextStream(ch) {
       if (ch.urls && ch.urls.length > 1) {
         const currIdx = ch.urls.indexOf(ch.url);
@@ -1142,7 +1129,6 @@
       updateActiveItemStyles();
       showOsdBriefly();
 
-      // ALWAYS prioritize Hls.js across desktop and Android Chrome (avoids audio-only black screens)
       if (Hls.isSupported()) {
         if (currentHls) currentHls.destroy();
         currentHls = new Hls({ 
@@ -1196,7 +1182,6 @@
         currentHls.attachMedia(video);
 
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native fallback exclusively for Apple iOS / Safari
         if (currentHls) {
           currentHls.destroy();
           currentHls = null;
@@ -1219,7 +1204,6 @@
       loadChannel(nextIndex);
     }
 
-    // Inspects a master playlist to identify its highest advertised height resolution
     function extractMaxHeightFromPlaylist(text) {
       const matches = [...text.matchAll(/RESOLUTION=\d+x(\d+)/gi)];
       if (matches.length > 0) {
@@ -1242,7 +1226,6 @@
       }
     }
 
-    // Evaluates stream candidates, selecting the one with the highest quality
     async function validateAllStreams() {
       const probePromises = CHANNELS.map(async (ch) => {
         if (ch.urls && ch.urls.length > 0) {
@@ -1274,7 +1257,6 @@
       if (CHANNELS[activeIndex] && CHANNELS[activeIndex].isAvailable === false) {
         browseChannel(1);
       } else if (activeIndex === 0) {
-        // Refresh active channel if a higher-quality candidate was selected during boot
         loadChannel(0);
       }
     }
@@ -1306,6 +1288,7 @@
       showOsdBriefly();
     }
 
+    // Precise hover detection restricted strictly to the actual 320px drawer boundary
     function handleMouseMove(e) {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
@@ -1318,8 +1301,11 @@
         }
       }, 2500);
 
-      const isWithinRight30Percent = e.clientX >= (windowWidth * 0.70);
-      if (isWithinRight30Percent || sidebar.matches(':hover')) {
+      // Trigger ONLY when the cursor reaches the physical width of the drawer (rightmost 320px)
+      const sidebarWidth = sidebar.offsetWidth || 320;
+      const isInsideDrawerRegion = e.clientX >= (windowWidth - sidebarWidth);
+
+      if (isInsideDrawerRegion || sidebar.matches(':hover')) {
         showSidebar();
       } else {
         hideSidebar();
