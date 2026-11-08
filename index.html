@@ -11,18 +11,19 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     :root {
-      --bg-base: #0b0d13;
-      --bg-surface: #141721;
-      --bg-card: #1c2130;
-      --bg-card-hover: #262c40;
+      --bg-base: #000000;
+      --bg-surface: rgba(18, 22, 34, 0.92);
+      --bg-card: rgba(255, 255, 255, 0.1);
+      --bg-card-hover: rgba(255, 255, 255, 0.2);
       --accent: #2563eb;
-      --accent-glow: rgba(37, 99, 235, 0.45);
+      --accent-glow: rgba(37, 99, 235, 0.5);
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --border: #23293b;
-      --bar-h: 46px;
-      --row-h: 22px;
-      --sidebar-w: 240px;
+      --border: rgba(255, 255, 255, 0.14);
+      --row-h: 36px;
+      --sidebar-w: 360px;
+      --btn-h: 52px;
+      --btn-font: 0.98rem;
     }
 
     * {
@@ -44,238 +45,33 @@
     }
 
     #app {
-      display: flex;
-      flex-direction: column;
       width: 100%;
       height: 100%;
-      background-color: var(--bg-base);
       position: relative;
-    }
-
-    .unified-top-bar {
-      height: var(--bar-h);
-      background-color: var(--bg-surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-shrink: 0;
-      z-index: 95;
-      transition: transform 0.25s ease, opacity 0.25s ease;
-    }
-
-    @media (min-width: 901px) {
-      #app:fullscreen .unified-top-bar,
-      #app:-webkit-full-screen .unified-top-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: rgba(20, 23, 33, 0.95);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-
-      #app:fullscreen .unified-top-bar.reveal-top,
-      #app:-webkit-full-screen .unified-top-bar.reveal-top {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .top-row-1 {
-      display: flex;
-      align-items: center;
-    }
-
-    .brand-signal {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      background: #ef4444;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #ef4444;
-      animation: pulse 1.8s infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-
-    .np-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .np-logo {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-      background: #fff;
-      border-radius: 4px;
-      padding: 1px;
-      flex-shrink: 0;
-    }
-
-    .np-text {
-      min-width: 0;
-    }
-
-    .np-title {
-      font-size: 0.82rem;
-      font-weight: 600;
-      white-space: nowrap;
+      background: #000;
       overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 160px;
     }
 
-    .np-category {
-      font-size: 0.65rem;
-      color: var(--text-muted);
+    #app.hide-cursor {
+      cursor: none;
+    }
+
+    /* Video Player Viewport */
+    .video-viewport {
+      width: 100%;
+      height: 100%;
       display: flex;
-      align-items: center;
-      gap: 5px;
-      white-space: nowrap;
-    }
-
-    .res-badge {
-      display: none;
-      background: rgba(37, 99, 235, 0.2);
-      border: 1px solid rgba(37, 99, 235, 0.6);
-      color: #93c5fd;
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      padding: 1px 4px;
-      border-radius: 3px;
-      line-height: 1;
-    }
-
-    .res-badge.active {
-      display: inline-block;
-    }
-
-    .top-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .vol-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 2px 4px;
-      border-radius: 5px;
-      border: 1px solid var(--border);
-    }
-
-    .vol-indicator {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #cbd5e1;
-      padding: 0 4px;
-      min-width: 36px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .vol-indicator.muted {
-      color: #f87171;
-    }
-
-    .action-btn {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0 8px;
-      height: 28px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.72rem;
-      font-weight: 500;
-      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .action-btn.btn-sm {
-      padding: 0 4px;
-      font-size: 0.68rem;
-    }
-
-    .action-btn:hover {
-      background-color: var(--bg-card-hover);
-      border-color: var(--accent);
-    }
-
-    .action-btn:active {
-      transform: translateY(1px);
-    }
-
-    kbd {
-      background: #1e2433;
-      border: 1px solid #333c52;
-      color: #cbd5e1;
-      padding: 1px 3px;
-      border-radius: 3px;
-      font-family: inherit;
-      font-size: 0.60rem;
-      font-weight: 600;
-      pointer-events: none;
-    }
-
-    .stage {
-      flex: 1 1 0%;
-      min-height: 0;
       position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: row;
-    }
-
-    .player-section {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-height: 0;
       background: #000;
-      position: relative;
-      flex: 0 0 auto;
-    }
-
-    .video-viewport {
-      height: 100%;
-      position: relative;
-      background-color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
     }
 
     .video-ratio-box {
+      width: 100%;
       height: 100%;
+      max-width: calc(100vh * (16 / 9));
+      max-height: calc(100vw * (9 / 16));
       aspect-ratio: 16 / 9;
       position: relative;
       display: flex;
@@ -291,198 +87,371 @@
       background: #000;
     }
 
+    /* Initial fullscreen starter gate */
     #fullscreen-gate {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.75);
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: opacity 0.25s ease;
+    }
+
+    #fullscreen-gate .gate-btn {
+      padding: 18px 36px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(37, 99, 235, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 9999px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
+      text-align: center;
+    }
+
+    /* =========================================================
+       TOUCH-FRIENDLY DOUBLE-SIZED OSD OVERLAY
+       ========================================================= */
+    .osd-layer {
       position: absolute;
       inset: 0;
       z-index: 30;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.65);
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      transition: opacity 0.25s ease;
-    }
-
-    #fullscreen-gate .btn {
-      padding: 10px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #fff;
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 9999px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-      text-align: center;
-    }
-
-    #app.hide-cursor {
-      cursor: none;
-    }
-
-    .sidebar {
-      position: static !important;
-      flex: 1 1 0% !important;
-      width: auto !important;
-      min-width: 0 !important;
-      height: 100% !important;
-      min-height: 0 !important;
-      background-color: rgba(17, 20, 29, 0.98);
-      border-left: 1px solid var(--border);
-      display: flex;
       flex-direction: column;
-      z-index: 85;
-      transform: none !important;
-      box-shadow: none !important;
-      pointer-events: auto !important;
+      justify-content: space-between;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: env(safe-area-inset-top, 14px) env(safe-area-inset-right, 14px) env(safe-area-inset-bottom, 16px) env(safe-area-inset-left, 14px);
     }
 
-    @media (min-width: 901px) {
-      #app:fullscreen .stage,
-      #app:-webkit-full-screen .stage {
-        display: flex;
-        flex-direction: column;
-      }
-
-      #app:fullscreen .player-section,
-      #app:-webkit-full-screen .player-section {
-        width: 100% !important;
-        height: 100% !important;
-        flex: 1 1 100% !important;
-      }
-
-      #app:fullscreen .video-viewport,
-      #app:-webkit-full-screen .video-viewport {
-        width: 100% !important;
-        height: 100% !important;
-        justify-content: center !important;
-      }
-
-      #app:fullscreen .video-ratio-box,
-      #app:-webkit-full-screen .video-ratio-box {
-        max-width: 100% !important;
-        max-height: 100% !important;
-      }
-
-      #app:fullscreen .sidebar,
-      #app:-webkit-full-screen .sidebar {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: var(--sidebar-w) !important;
-        flex: 0 0 auto !important;
-        height: 100% !important;
-        transform: translateX(100%) !important;
-        transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
-        box-shadow: -8px 0 28px rgba(0, 0, 0, 0.7) !important;
-        pointer-events: none !important;
-      }
-
-      #app:fullscreen .sidebar.visible,
-      #app:-webkit-full-screen .sidebar.visible {
-        transform: translateX(0) !important;
-        pointer-events: auto !important;
-      }
+    .osd-layer.visible {
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    .sidebar-header {
-      height: 24px;
-      padding: 0 8px;
-      font-size: 0.66rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .channel-list {
-      flex: 1 1 0%;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      overflow-y: hidden;
-      padding: 2px 4px 6px;
-      gap: 1px;
-    }
-
-    .flag-divider {
+    /* Top HUD Bar */
+    .osd-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1px 4px;
-      margin: 1px 0 0;
-      flex-shrink: 0;
-      opacity: 0.9;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
+      transform: translateY(-8px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .flag-left {
+    .osd-layer.visible .osd-top {
+      transform: translateY(0);
+    }
+
+    .brand-signal {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .live-dot {
+      width: 12px;
+      height: 12px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #ef4444;
+      animation: pulse 1.8s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+
+    .np-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .np-logo {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 6px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    .np-text {
+      min-width: 0;
+    }
+
+    .np-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+
+    .np-category {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .res-badge {
+      display: none;
+      background: rgba(37, 99, 235, 0.3);
+      border: 1px solid rgba(37, 99, 235, 0.8);
+      color: #93c5fd;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      line-height: 1;
+    }
+
+    .res-badge.active {
+      display: inline-block;
+    }
+
+    .osd-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Doubled Touch Action Buttons */
+    .osd-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      min-height: var(--btn-h);
+      padding: 0 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: var(--btn-font);
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
+      gap: 8px;
+      line-height: 1;
+      white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
     }
 
-    .flag-icon {
-      width: 15px;
-      height: 10px;
-      border-radius: 1.5px;
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-      display: inline-block;
-      flex-shrink: 0;
+    .osd-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+
+    .osd-btn:active {
+      transform: scale(0.96);
+    }
+
+    .osd-btn.btn-accent {
+      background: rgba(37, 99, 235, 0.38);
+      border-color: rgba(37, 99, 235, 0.85);
+      color: #bfdbfe;
+    }
+
+    kbd {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #cbd5e1;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.70rem;
+      font-weight: 600;
       pointer-events: none;
     }
 
-    .flag-shortcut {
-      font-size: 0.58rem;
-      padding: 0 3px;
-      border-radius: 3px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Bottom HUD Bar */
+    .osd-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 10px 20px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+      align-self: center;
+      max-width: 95%;
+      transform: translateY(8px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .osd-layer.visible .osd-bottom {
+      transform: translateY(0);
+    }
+
+    /* Doubled Volume Controller */
+    .vol-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      height: var(--btn-h);
+    }
+
+    .vol-btn {
+      height: 38px !important;
+      min-height: 38px !important;
+      padding: 0 10px !important;
+      font-size: 0.90rem !important;
+    }
+
+    .vol-indicator {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #cbd5e1;
+      padding: 0 8px;
+      min-width: 58px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .vol-indicator.muted {
+      color: #f87171;
+    }
+
+    /* =========================================================
+       TWO-COLUMN CHANNEL DRAWER (ENTIRE HEIGHT & TOUCH-FRIENDLY)
+       ========================================================= */
+    .sidebar {
+      position: absolute;
+      top: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      height: 100% !important; /* Uses entire viewport height */
+      width: var(--sidebar-w);
+      background: rgba(13, 17, 26, 0.97);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.9);
+      pointer-events: none;
+    }
+
+    .sidebar.visible {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .sidebar-header {
+      height: 48px;
+      padding: 0 16px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .close-drawer-btn {
+      background: transparent;
+      border: none;
       color: #94a3b8;
+      font-size: 1.35rem;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+
+    .close-drawer-btn:active {
+      color: #fff;
+    }
+
+    /* Two-column touch list with zero scroll */
+    .channel-list {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: var(--row-h);
+      overflow-y: hidden;
+      padding: 6px 8px;
+      gap: 4px 6px;
     }
 
     .channel-item {
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 0 4px;
-      border-radius: 3px;
+      gap: 10px;
+      padding: 0 10px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.1s ease;
+      transition: background 0.12s ease;
       border: 1px solid transparent;
       height: var(--row-h);
-      min-height: 11px;
-      flex: 1 1 0%;
+      min-height: 24px;
       line-height: 1;
+      background: rgba(255, 255, 255, 0.05);
+      overflow: hidden;
     }
 
     .channel-item:hover {
-      background-color: var(--bg-card);
+      background-color: var(--bg-card-hover);
     }
 
     .channel-item.active {
-      background-color: var(--bg-card);
+      background-color: rgba(37, 99, 235, 0.35);
       border-color: var(--accent);
-      box-shadow: inset 2px 0 0 var(--accent);
+      box-shadow: inset 4px 0 0 var(--accent);
     }
 
     .ch-logo-wrap {
-      height: 80%;
-      max-height: 16px;
+      height: 72%;
+      max-height: 28px;
       aspect-ratio: 4 / 3;
-      border-radius: 2px;
+      border-radius: 4px;
       background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       flex-shrink: 0;
-      padding: 1px;
+      padding: 2px;
       pointer-events: none;
     }
 
@@ -495,8 +464,8 @@
     .ch-name {
       flex: 1;
       min-width: 0;
-      font-size: 0.68rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -505,484 +474,150 @@
 
     .toast-msg {
       position: absolute;
-      top: 18px;
+      top: 28px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px);
       color: #fff;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.76rem;
-      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
       pointer-events: none;
       z-index: 100;
       opacity: 0;
       transition: opacity 0.2s ease;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
     }
 
     .toast-msg.show {
       opacity: 1;
     }
 
-    /* 1. Mobile Portrait Layout */
-    @media (orientation: portrait) and (max-width: 900px) {
-      #app {
-        flex-direction: column !important;
+    /* Mobile Adaptations */
+    @media (max-width: 768px) {
+      :root {
+        --sidebar-w: min(92vw, 420px);
+        --btn-h: 46px;
+        --btn-font: 0.88rem;
       }
 
-      .stage {
-        flex-direction: column !important;
-        width: 100% !important;
-        height: 100% !important;
-      }
-
-      .player-section {
-        order: 1 !important;
-        width: 100% !important;
-        height: auto !important;
-        flex: 0 0 auto !important;
-      }
-
-      .video-viewport {
-        width: 100% !important;
-        height: auto !important;
-        justify-content: center !important;
-      }
-
-      .video-ratio-box {
-        width: 100% !important;
-        height: auto !important;
-        max-height: calc(100vw * (9 / 16)) !important;
-        aspect-ratio: 16 / 9 !important;
-      }
-
-      .unified-top-bar {
-        order: 2 !important;
-        position: static !important;
-        transform: none !important;
-        opacity: 1 !important;
-        height: auto !important;
-        padding: 4px 6px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 4px !important;
-        border-top: 1px solid var(--border);
-        border-bottom: 1px solid var(--border);
-      }
-
-      .top-row-1 {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+      .osd-top {
+        padding: 8px 12px;
       }
 
       .np-title {
-        max-width: 200px;
-        font-size: 0.76rem;
+        max-width: 150px;
+        font-size: 0.92rem;
       }
 
-      .top-row-2 {
-        width: 100%;
+      .osd-bottom {
+        padding: 8px 12px;
+        gap: 8px;
       }
 
-      .top-controls {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 4px !important;
-        width: 100% !important;
+      .vol-group {
+        height: var(--btn-h);
       }
 
-      #channelsBtn {
-        display: none !important;
-      }
-
-      .top-controls .action-btn {
-        width: 100% !important;
-        height: 28px !important;
-        padding: 0 3px !important;
-        font-size: 0.65rem !important;
-      }
-
-      .top-controls .vol-group {
-        grid-column: span 3;
-        width: 100%;
-        height: 28px;
-        display: flex;
-        justify-content: space-between;
-        padding: 0 4px;
-      }
-
-      .top-controls .vol-indicator {
-        min-width: 32px;
-        font-size: 0.68rem;
-      }
-
-      .sidebar {
-        order: 3 !important;
-        border-left: none !important;
-        width: 100% !important;
-        flex: 1 1 0% !important;
-        height: auto !important;
-      }
-
-      .sidebar-header {
-        height: 18px;
-        padding: 0 6px;
-        font-size: 0.58rem;
-      }
-
-      /* Hide flag dividers on mobile portrait */
-      .flag-divider {
-        display: none !important;
-      }
-    }
-
-    /* 2. Mobile Landscape Layout */
-    @media (orientation: landscape) and (max-height: 600px), (orientation: landscape) and (max-width: 950px) {
-      #app,
-      #app:fullscreen,
-      #app:-webkit-full-screen {
-        flex-direction: row !important;
-        width: 100vw !important;
-        height: 100vh !important;
-      }
-
-      #channelsBtn {
-        display: none !important;
-      }
-
-      .unified-top-bar,
-      #app:fullscreen .unified-top-bar,
-      #app:-webkit-full-screen .unified-top-bar {
-        order: 1 !important;
-        position: static !important;
-        transform: none !important;
-        opacity: 1 !important;
-        flex: 1 1 0% !important;
-        width: auto !important;
-        min-width: 80px !important;
-        height: 100% !important;
-        padding: 4px 2px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        gap: 2px !important;
-        border-bottom: none !important;
-        border-right: 1px solid var(--border);
-        overflow: hidden;
-      }
-
-      .top-row-1 {
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 2px;
-      }
-
-      .np-info {
-        flex-direction: column;
-        gap: 2px;
-      }
-
-      .np-title {
-        max-width: 80px;
-        font-size: 0.65rem;
-        text-align: center;
-      }
-
-      .np-category {
-        display: none;
-      }
-
-      .top-row-2 {
-        width: 100%;
-        flex: 1 1 0%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-      }
-
-      .top-controls {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-evenly !important;
-        height: 100% !important;
-        width: 100% !important;
-        gap: 2px !important;
-      }
-
-      .top-controls .action-btn {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 20px !important;
-        flex: 1 1 0% !important;
-        padding: 0 1px !important;
-        font-size: 0.60rem !important;
-      }
-
-      .top-controls .vol-group {
-        width: 100%;
-        min-height: 20px !important;
-        flex: 1 1 0% !important;
-        justify-content: space-between;
-        padding: 0 1px;
-      }
-
-      .top-controls .vol-indicator {
-        min-width: 20px;
-        font-size: 0.58rem;
-      }
-
-      .stage,
-      #app:fullscreen .stage,
-      #app:-webkit-full-screen .stage {
-        order: 2 !important;
-        flex-direction: row !important;
-        flex: 0 0 auto !important;
-        width: auto !important;
-        height: 100% !important;
-        display: flex !important;
-      }
-
-      .player-section,
-      #app:fullscreen .player-section,
-      #app:-webkit-full-screen .player-section {
-        flex: 0 0 auto !important;
-        width: auto !important;
-        height: 100% !important;
-      }
-
-      .video-viewport,
-      #app:fullscreen .video-viewport,
-      #app:-webkit-full-screen .video-viewport {
-        width: auto !important;
-        height: 100% !important;
-        justify-content: center !important;
-      }
-
-      .video-ratio-box,
-      #app:fullscreen .video-ratio-box,
-      #app:-webkit-full-screen .video-ratio-box {
-        height: 100% !important;
-        width: calc(100vh * (16 / 9)) !important;
-        max-width: none !important;
-        aspect-ratio: 16 / 9 !important;
-      }
-
-      .sidebar,
-      #app:fullscreen .sidebar,
-      #app:-webkit-full-screen .sidebar {
-        order: 3 !important;
-        position: static !important;
-        transform: none !important;
-        box-shadow: none !important;
-        pointer-events: auto !important;
-        border-left: 1px solid var(--border) !important;
-        flex: 1 1 0% !important;
-        width: auto !important;
-        min-width: 80px !important;
-        height: 100% !important;
-      }
-
-      .sidebar-header {
-        display: none;
+      .vol-btn {
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 8px !important;
       }
 
       .channel-list {
-        padding: 1px 2px !important;
-        gap: 0px !important;
+        padding: 4px 6px;
+        gap: 3px 5px;
       }
 
       .channel-item {
-        padding: 0 2px !important;
+        padding: 0 8px;
+        gap: 8px;
       }
 
       .ch-name {
-        font-size: 0.62rem !important;
-      }
-
-      /* Hide flag dividers on mobile landscape */
-      .flag-divider {
-        display: none !important;
+        font-size: 0.74rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <svg style="display: none;">
-    <defs>
-      <!-- English -->
-      <g id="flag-en">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <defs>
-            <clipPath id="split-tl"><polygon points="0,0 60,0 0,40"/></clipPath>
-            <clipPath id="split-br"><polygon points="60,0 60,40 0,40"/></clipPath>
-          </defs>
-          <g clip-path="url(#split-tl)">
-            <rect width="60" height="40" fill="#b22234"/>
-            <path d="M0,3.07h60 M0,9.23h60 M0,15.38h60 M0,21.53h60 M0,27.69h60 M0,33.84h60" stroke="#fff" stroke-width="3.07"/>
-            <rect width="24" height="21.5" fill="#3c3b6e"/>
-            <circle cx="6" cy="5" r="1" fill="#fff"/>
-            <circle cx="12" cy="5" r="1" fill="#fff"/>
-            <circle cx="18" cy="5" r="1" fill="#fff"/>
-            <circle cx="9" cy="11" r="1" fill="#fff"/>
-            <circle cx="15" cy="11" r="1" fill="#fff"/>
-            <circle cx="6" cy="16" r="1" fill="#fff"/>
-            <circle cx="12" cy="16" r="1" fill="#fff"/>
-            <circle cx="18" cy="16" r="1" fill="#fff"/>
-          </g>
-          <g clip-path="url(#split-br)">
-            <rect width="60" height="40" fill="#012169"/>
-            <path d="M0,0 L60,40 M60,0 L0,40" stroke="#fff" stroke-width="6"/>
-            <path d="M0,0 L60,40 M60,0 L0,40" stroke="#c8102e" stroke-width="2"/>
-            <path d="M30,0 v40 M0,20 h60" stroke="#fff" stroke-width="10"/>
-            <path d="M30,0 v40 M0,20 h60" stroke="#c8102e" stroke-width="6"/>
-          </g>
-          <line x1="0" y1="40" x2="60" y2="0" stroke="#ffffff" stroke-width="1.2"/>
-        </svg>
-      </g>
-      <!-- France -->
-      <g id="flag-fr">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="20" height="40" fill="#002395"/><rect x="20" width="20" height="40" fill="#fff"/><rect x="40" width="20" height="40" fill="#ed2939"/>
-        </svg>
-      </g>
-      <!-- Spain -->
-      <g id="flag-es">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="60" height="40" fill="#aa151b"/><rect y="10" width="60" height="20" fill="#f1bf00"/>
-        </svg>
-      </g>
-      <!-- Germany -->
-      <g id="flag-de">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="60" height="40" fill="#000"/><rect y="13.33" width="60" height="13.33" fill="#dd0000"/><rect y="26.66" width="60" height="13.34" fill="#ffce00"/>
-        </svg>
-      </g>
-      <!-- Luxembourg -->
-      <g id="flag-lu">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="60" height="13.33" fill="#ea141d"/><rect y="13.33" width="60" height="13.33" fill="#fff"/><rect y="26.66" width="60" height="13.34" fill="#00a1de"/>
-        </svg>
-      </g>
-      <!-- Italy -->
-      <g id="flag-it">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff"/><rect x="40" width="20" height="40" fill="#ce2b37"/>
-        </svg>
-      </g>
-      <!-- Türkiye -->
-      <g id="flag-tr">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="60" height="40" fill="#e30a17"/>
-          <circle cx="23" cy="20" r="10" fill="#fff"/><circle cx="26" cy="20" r="8" fill="#e30a17"/>
-          <polygon points="34,20 39,22 37,17 40,14 35,15 33,11 32,16 27,16 31,19 29,24" fill="#fff"/>
-        </svg>
-      </g>
-      <!-- Zimbabwe -->
-      <g id="flag-zw">
-        <svg viewBox="0 0 60 40" width="15" height="10">
-          <rect width="60" height="5.71" fill="#319241"/>
-          <rect y="5.71" width="60" height="5.71" fill="#ffd200"/>
-          <rect y="11.42" width="60" height="5.71" fill="#de2010"/>
-          <rect y="17.13" width="60" height="5.74" fill="#000000"/>
-          <rect y="22.87" width="60" height="5.71" fill="#de2010"/>
-          <rect y="28.58" width="60" height="5.71" fill="#ffd200"/>
-          <rect y="34.29" width="60" height="5.71" fill="#319241"/>
-          <polygon points="0,0 24,20 0,40" fill="#ffffff" stroke="#000000" stroke-width="1"/>
-          <polygon points="8,15 9.8,20.5 15,20.5 10.8,23.5 12.4,28.5 8,25.5 3.6,28.5 5.2,23.5 1,20.5 6.2,20.5" fill="#de2010"/>
-        </svg>
-      </g>
-    </defs>
-  </svg>
-
   <div id="app">
-    <!-- Top Bar -->
-    <header class="unified-top-bar" id="unifiedTopBar">
-      <div class="top-row-1">
-        <div class="brand-signal">
-          <div class="live-dot" title="AFL TV Live Stream"></div>
-          <div class="np-info">
-            <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
-            <div class="np-text">
-              <div id="npTitle" class="np-title">Select channel</div>
-              <div id="npCategory" class="np-category">
-                <svg id="npFlag" class="flag-icon" style="display:none;"></svg>
-                <span id="npCategoryText">-</span>
-                <span id="npResBadge" class="res-badge">...</span>
+    <div class="video-viewport" id="viewport">
+      <div class="video-ratio-box">
+        <video id="videoPlayer" autoplay muted playsinline webkit-playsinline></video>
+      </div>
+
+      <!-- Fullscreen startup gate -->
+      <div id="fullscreen-gate">
+        <div class="gate-btn">Tap or Press [Enter] to Start</div>
+      </div>
+
+      <div id="toastMessage" class="toast-msg"></div>
+
+      <!-- Touch and Mouse Active Overlay -->
+      <div class="osd-layer" id="osdLayer">
+        <!-- Top HUD Bar -->
+        <header class="osd-top" id="osdTop">
+          <div class="brand-signal">
+            <div class="live-dot" title="AFL TV Live Stream"></div>
+            <div class="np-info">
+              <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
+              <div class="np-text">
+                <div id="npTitle" class="np-title">Select channel</div>
+                <div id="npCategory" class="np-category">
+                  <span id="npCategoryText">-</span>
+                  <span id="npResBadge" class="res-badge">...</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="top-row-2">
-        <div class="top-controls">
-          <button class="action-btn" id="playPauseBtn">⏯ Play <kbd>Space</kbd></button>
-          <button class="action-btn" id="prevChBtn">◀ Prev <kbd>◀</kbd></button>
-          <button class="action-btn" id="nextChBtn"><kbd>▶</kbd> Next ▶</button>
+          <div class="osd-btn-group">
+            <button class="osd-btn" id="ccBtn" title="Subtitles [-]">💬 CC <kbd>-</kbd></button>
+            <button class="osd-btn" id="pipBtn" title="Picture in Picture [P]">⧉ PiP <kbd>P</kbd></button>
+            <button class="osd-btn" id="fsToggleBtn" title="Toggle Fullscreen [Enter / F11]">⛶ Full <kbd>Enter</kbd></button>
+            <button class="osd-btn btn-accent" id="channelsBtn" title="Channels Drawer [C]">☰ Channels <kbd>C</kbd></button>
+          </div>
+        </header>
+
+        <!-- Bottom HUD Bar -->
+        <footer class="osd-bottom" id="osdBottom">
+          <button class="osd-btn" id="prevChBtn" title="Previous Channel [◀]">◀ Prev <kbd>◀</kbd></button>
+          <button class="osd-btn btn-accent" id="playPauseBtn" title="Play / Pause [Space]">⏯ Play <kbd>Space</kbd></button>
+          <button class="osd-btn" id="nextChBtn" title="Next Channel [▶]">Next ▶ <kbd>▶</kbd></button>
 
           <div class="vol-group">
-            <button class="action-btn btn-sm" id="volDownBtn" title="Volume Down [▼]">🔉 <kbd>▼</kbd></button>
-            <div class="vol-indicator" id="volDisplay" title="Click to Mute/Unmute [M]"><span id="volPercent">100%</span> <kbd>M</kbd></div>
-            <button class="action-btn btn-sm" id="volUpBtn" title="Volume Up [▲]">🔊 <kbd>▲</kbd></button>
+            <button class="osd-btn vol-btn" id="volDownBtn" title="Volume Down [▼]">🔉 <kbd>▼</kbd></button>
+            <div class="vol-indicator" id="volDisplay" title="Mute/Unmute [M]"><span id="volPercent">100%</span> <kbd>M</kbd></div>
+            <button class="osd-btn vol-btn" id="volUpBtn" title="Volume Up [▲]">🔊 <kbd>▲</kbd></button>
           </div>
-
-          <button class="action-btn" id="ccBtn" title="Toggle Subtitles / Captions [-]">💬 CC <kbd>-</kbd></button>
-          <button class="action-btn" id="pipBtn" title="Picture in Picture [P]">⧉ PiP <kbd>P</kbd></button>
-          <button class="action-btn" id="fsToggleBtn" title="Toggle Fullscreen [Enter / F11]">⛶ Fullscreen <kbd>Enter</kbd></button>
-          <button class="action-btn" id="channelsBtn" title="Toggle Channels Drawer [C]">☰ Channels <kbd>C</kbd></button>
-        </div>
+        </footer>
       </div>
-    </header>
 
-    <div class="stage" id="stageContainer">
-      <section class="player-section" id="playerContainer">
-        <!-- 16:9 Leftmost Video Viewport Structure -->
-        <div class="video-viewport" id="viewport">
-          <div class="video-ratio-box">
-            <video id="videoPlayer" autoplay muted playsinline webkit-playsinline></video>
-          </div>
-
-          <div id="fullscreen-gate">
-            <div class="btn">Press [Enter] or Tap Here to Start in Fullscreen and Unmuted</div>
-          </div>
-
-          <div id="toastMessage" class="toast-msg"></div>
-        </div>
-      </section>
-
-      <!-- Sidebar -->
+      <!-- 2-Column Channel Drawer covering entire viewport height -->
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header" id="channelCount">Channels</div>
+        <div class="sidebar-header">
+          <span id="channelCount">Channels</span>
+          <button class="close-drawer-btn" id="closeDrawerBtn" title="Close [Esc]">✕</button>
+        </div>
         <div class="channel-list" id="channelList"></div>
       </aside>
     </div>
   </div>
 
   <script>
-    const COUNTRY_META = {
-      EN: { flagId: "#flag-en", key: "E" },
-      FR: { flagId: "#flag-fr", key: "F" },
-      ES: { flagId: "#flag-es", key: "S" },
-      DE: { flagId: "#flag-de", key: "D/G" },
-      LU: { flagId: "#flag-lu", key: "L" },
-      IT: { flagId: "#flag-it", key: "I/İ" },
-      TR: { flagId: "#flag-tr", key: "T" },
-      SPECIAL: { flagId: "#flag-zw", key: "Z" }
-    };
-
     const LOGOS = {
       bloomberg: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3EBloomberg%3C/text%3E%3C/svg%3E`,
       cnbc: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='18' text-anchor='middle'%3ECNBC%3C/text%3E%3C/svg%3E`,
       bfm: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%230055a5'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EBFMTV%3C/text%3E%3C/svg%3E`,
       bfmbiz: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002244'/%3E%3Ctext x='50' y='26' fill='%2300aaff' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3EBFM BIZ%3C/text%3E%3C/svg%3E`,
       negocios: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23111'/%3E%3Ctext x='50' y='25' fill='%2300ff88' font-family='sans-serif' font-weight='bold' font-size='14' text-anchor='middle'%3ENegocios%3C/text%3E%3C/svg%3E`,
+      daserste: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ccircle cx='50' cy='20' r='14' fill='%2300305e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='17' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E`,
       zdf: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23fa7d19'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3EZDF%3C/text%3E%3C/svg%3E`,
       wdr: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='18' text-anchor='middle'%3EWDR%3C/text%3E%3C/svg%3E`,
       prosieben: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23e2001a'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='22' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E`,
@@ -993,7 +628,7 @@
       rai3: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23008055'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3ERai 3%3C/text%3E%3C/svg%3E`,
       trt1: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23c8102e'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ETRT 1%3C/text%3E%3C/svg%3E`,
       atv: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23f15a24'/%3E%3Ctext x='50' y='27' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='19' text-anchor='middle'%3Eatv%3C/text%3E%3C/svg%3E`,
-      kanald: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002b66'/%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ccircle cx='50' cy='20' r='6' fill='%23002b66'/%3E%3C/svg%3E`,
+      kanald: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Ccircle cx='50' cy='20' r='14' fill='%23fff'/%3E%3Ccircle cx='50' cy='20' r='6' fill='%23002b66'/%3E%3C/svg%3E`,
       haberturk: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23b20000'/%3E%3Ctext x='50' y='25' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='13' text-anchor='middle'%3EHABERTURK%3C/text%3E%3C/svg%3E`,
       bloomberght: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23222'/%3E%3Ctext x='50' y='25' fill='%23ff9900' font-family='sans-serif' font-weight='bold' font-size='13' text-anchor='middle'%3EBLOOMBERG HT%3C/text%3E%3C/svg%3E`,
       cnbce: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23002855'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='15' text-anchor='middle'%3ECNBC-e%3C/text%3E%3C/svg%3E`,
@@ -1128,13 +763,16 @@
       }
     ];
 
+    // DOM References
     const appContainer = document.getElementById('app');
-    const unifiedTopBar = document.getElementById('unifiedTopBar');
-    const video = document.getElementById('videoPlayer');
     const viewport = document.getElementById('viewport');
+    const video = document.getElementById('videoPlayer');
     const gate = document.getElementById('fullscreen-gate');
+    const osdLayer = document.getElementById('osdLayer');
     const sidebar = document.getElementById('sidebar');
     const channelListEl = document.getElementById('channelList');
+    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+
     const fsToggleBtn = document.getElementById('fsToggleBtn');
     const pipBtn = document.getElementById('pipBtn');
     const ccBtn = document.getElementById('ccBtn');
@@ -1150,15 +788,14 @@
 
     const npTitle = document.getElementById('npTitle');
     const npCategoryText = document.getElementById('npCategoryText');
-    const npFlag = document.getElementById('npFlag');
     const npLogo = document.getElementById('npLogo');
     const npResBadge = document.getElementById('npResBadge');
     const channelCount = document.getElementById('channelCount');
 
+    // App State
     let currentHls = null;
     let activeIndex = 0;
-    let cursorTimeout = null;
-    let sidebarHideTimeout = null;
+    let osdTimeout = null;
     let toastTimeout = null;
 
     function showToast(msg) {
@@ -1168,6 +805,32 @@
       toastTimeout = setTimeout(() => {
         toastMessage.classList.remove('show');
       }, 1500);
+    }
+
+    function showOSD() {
+      osdLayer.classList.add('visible');
+      appContainer.classList.remove('hide-cursor');
+      clearTimeout(osdTimeout);
+      osdTimeout = setTimeout(() => {
+        if (!video.paused && !sidebar.classList.contains('visible')) {
+          hideOSD();
+        }
+      }, 3500);
+    }
+
+    function hideOSD() {
+      osdLayer.classList.remove('visible');
+      if (isFullscreen()) {
+        appContainer.classList.add('hide-cursor');
+      }
+    }
+
+    function toggleOSD() {
+      if (osdLayer.classList.contains('visible')) {
+        hideOSD();
+      } else {
+        showOSD();
+      }
     }
 
     function updateVolumeDisplay() {
@@ -1187,12 +850,14 @@
       video.volume = Number(target.toFixed(2));
       updateVolumeDisplay();
       showToast(`Volume: ${Math.round(video.volume * 100)}%`);
+      showOSD();
     }
 
     function toggleMute() {
       video.muted = !video.muted;
       updateVolumeDisplay();
       showToast(video.muted ? 'Muted' : `Volume: ${Math.round(video.volume * 100)}%`);
+      showOSD();
     }
 
     function toggleCaptions() {
@@ -1219,6 +884,7 @@
       } else {
         showToast('Subtitles: Not available');
       }
+      showOSD();
     }
 
     async function togglePictureInPicture() {
@@ -1229,8 +895,9 @@
           await video.requestPictureInPicture();
         }
       } catch (err) {
-        console.warn("PiP mode could not be activated:", err);
+        console.warn("PiP error:", err);
       }
+      showOSD();
     }
 
     function updateActualResolutionBadge() {
@@ -1269,21 +936,10 @@
     function adjustChannelRowSizes() {
       const containerHeight = channelListEl.clientHeight;
       const totalItems = channelListEl.querySelectorAll('.channel-item').length;
-      
-      // Calculate dividers only if they are actually visible (non-mobile modes)
-      let visibleDividersCount = 0;
-      const dividers = channelListEl.querySelectorAll('.flag-divider');
-      dividers.forEach(d => {
-        if (window.getComputedStyle(d).display !== 'none') {
-          visibleDividersCount++;
-        }
-      });
-
       if (totalItems > 0 && containerHeight > 0) {
-        const dividerSpace = visibleDividersCount * 15;
-        const availableForItems = Math.max(containerHeight - dividerSpace - 4, 20);
-        const calculatedRowH = Math.floor(availableForItems / totalItems);
-        const clampedH = Math.min(Math.max(calculatedRowH, 11), 26);
+        const rowCount = Math.ceil(totalItems / 2);
+        const calculatedRowH = Math.floor((containerHeight - (rowCount * 3)) / rowCount);
+        const clampedH = Math.min(Math.max(calculatedRowH, 11), 36);
         document.documentElement.style.setProperty('--row-h', `${clampedH}px`);
       }
     }
@@ -1300,7 +956,6 @@
       });
 
       Object.keys(countryGroups).forEach((countryKey) => {
-        const meta = COUNTRY_META[countryKey] || { flagId: "", key: "" };
         let channels = countryGroups[countryKey];
 
         if (countryKey !== 'TR' && countryKey !== 'SPECIAL') {
@@ -1313,18 +968,6 @@
 
         if (channels.length > 0) {
           totalMatched += channels.length;
-
-          if (meta.flagId) {
-            const flagDiv = document.createElement('div');
-            flagDiv.className = 'flag-divider';
-            flagDiv.innerHTML = `
-              <div class="flag-left">
-                <svg class="flag-icon"><use href="${meta.flagId}"/></svg>
-              </div>
-              ${meta.key ? `<kbd class="flag-shortcut">${meta.key}</kbd>` : ''}
-            `;
-            channelListEl.appendChild(flagDiv);
-          }
 
           channels.forEach(ch => {
             const item = document.createElement('div');
@@ -1340,7 +983,9 @@
             item.addEventListener('click', (e) => {
               e.stopPropagation();
               loadChannel(ch.originalIndex);
-              hideSidebarImmediately();
+              if (window.innerWidth > 900 && isFullscreen()) {
+                sidebar.classList.remove('visible');
+              }
             });
             channelListEl.appendChild(item);
           });
@@ -1375,16 +1020,9 @@
       activeIndex = index;
 
       const ch = CHANNELS[index];
-      const meta = COUNTRY_META[ch.country] || { flagId: "" };
 
       npTitle.textContent = ch.name;
       npCategoryText.textContent = ch.group;
-      if (meta.flagId) {
-        npFlag.innerHTML = `<use href="${meta.flagId}"/>`;
-        npFlag.style.display = 'inline-block';
-      } else {
-        npFlag.style.display = 'none';
-      }
       npLogo.src = ch.logo;
       npResBadge.classList.remove('active');
 
@@ -1457,10 +1095,12 @@
         const candidate = CHANNELS[nextIndex];
         if (!candidate.skipOnBrowse && (candidate.isAvailable || candidate.isAvailable === undefined)) {
           loadChannel(nextIndex);
+          showOSD();
           return;
         }
       }
       loadChannel(nextIndex);
+      showOSD();
     }
 
     function cycleCountryCategory(countryCode) {
@@ -1480,6 +1120,7 @@
       } else {
         loadChannel(countryIndices[0]);
       }
+      showOSD();
     }
 
     function extractMaxHeightFromPlaylist(text) {
@@ -1565,6 +1206,7 @@
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
+      showOSD();
     }
 
     function togglePlayPause() {
@@ -1575,84 +1217,22 @@
         video.pause();
         playPauseBtn.innerHTML = '⏯ Play <kbd>Space</kbd>';
       }
+      showOSD();
     }
 
-    function handleMouseMove(e) {
-      const windowWidth = window.innerWidth;
-
-      appContainer.classList.remove('hide-cursor');
-      clearTimeout(cursorTimeout);
-      cursorTimeout = setTimeout(() => {
-        if (!sidebar.classList.contains('visible') && !unifiedTopBar.matches(':hover')) {
-          appContainer.classList.add('hide-cursor');
-        }
-      }, 2500);
-
-      // Desktop fullscreen top bar auto-hide
-      if (isFullscreen() && windowWidth > 900) {
-        if (e.clientY <= 50 || unifiedTopBar.matches(':hover')) {
-          unifiedTopBar.classList.add('reveal-top');
-        } else {
-          unifiedTopBar.classList.remove('reveal-top');
-        }
-      }
-
-      // Desktop fullscreen sidebar hover drawer
-      if (isFullscreen() && windowWidth > 900) {
-        const sidebarWidth = 220;
-        const triggerThreshold = sidebarWidth / 2;
-
-        if (e.clientX >= (windowWidth - triggerThreshold) || sidebar.matches(':hover')) {
-          showSidebar();
-        } else if (sidebar.classList.contains('visible')) {
-          if (e.clientX < (windowWidth - sidebarWidth)) {
-            scheduleHideSidebar();
-          }
-        }
-      }
-    }
-
-    function showSidebar() {
-      clearTimeout(sidebarHideTimeout);
-      sidebar.classList.add('visible');
-    }
-
-    function scheduleHideSidebar() {
-      if (!isFullscreen() || window.innerWidth <= 900) return;
-      clearTimeout(sidebarHideTimeout);
-      sidebarHideTimeout = setTimeout(() => {
-        sidebar.classList.remove('visible');
-      }, 1200);
-    }
-
-    function hideSidebarImmediately() {
-      if (!isFullscreen() || window.innerWidth <= 900) return;
-      clearTimeout(sidebarHideTimeout);
-      sidebar.classList.remove('visible');
-    }
-
+    /* Touch and Mouse Interaction Listeners */
     viewport.addEventListener('click', (e) => {
-      if (e.target.closest('#fullscreen-gate') || e.target.closest('#sidebar')) {
+      if (e.target.closest('#fullscreen-gate') || e.target.closest('.osd-btn') || e.target.closest('.sidebar')) {
         return;
       }
-      if (isFullscreen() && window.innerWidth > 900 && sidebar.classList.contains('visible')) {
-        hideSidebarImmediately();
-      }
+      toggleOSD();
     });
 
-    window.addEventListener('mousemove', handleMouseMove);
-    sidebar.addEventListener('mouseenter', () => { if (isFullscreen() && window.innerWidth > 900) showSidebar(); });
-    sidebar.addEventListener('mouseleave', () => { if (isFullscreen() && window.innerWidth > 900) scheduleHideSidebar(); });
+    window.addEventListener('mousemove', showOSD);
+    window.addEventListener('touchstart', showOSD, { passive: true });
 
     document.addEventListener('fullscreenchange', () => {
-      if (!isFullscreen()) {
-        unifiedTopBar.classList.remove('reveal-top');
-        appContainer.classList.remove('hide-cursor');
-        sidebar.classList.remove('visible');
-        if (screen.orientation && screen.orientation.unlock) {
-          screen.orientation.unlock();
-        }
-      }
+      showOSD();
       setTimeout(adjustChannelRowSizes, 100);
     });
 
@@ -1661,13 +1241,14 @@
       setTimeout(adjustChannelRowSizes, 150);
     });
 
+    // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        if (sidebar.classList.contains('visible')) {
+          sidebar.classList.remove('visible');
+          return;
+        }
         if (isFullscreen()) {
-          if (window.innerWidth > 900 && sidebar.classList.contains('visible')) {
-            hideSidebarImmediately();
-            return;
-          }
           toggleFullscreen();
           return;
         }
@@ -1745,12 +1326,12 @@
         cycleCountryCategory('SPECIAL');
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        if (isFullscreen() && window.innerWidth > 900) {
-          sidebar.classList.toggle('visible');
-        }
+        sidebar.classList.toggle('visible');
+        showOSD();
       }
     });
 
+    // Touch & Button Click Handlers
     gate.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleFullscreen();
@@ -1763,10 +1344,14 @@
     ccBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleCaptions(); });
     channelsBtn.addEventListener('click', (e) => { 
       e.stopPropagation(); 
-      if (isFullscreen() && window.innerWidth > 900) {
-        sidebar.classList.toggle('visible'); 
-      }
+      sidebar.classList.toggle('visible'); 
+      showOSD();
     });
+    closeDrawerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.remove('visible');
+    });
+
     playPauseBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlayPause(); });
     prevChBtn.addEventListener('click', (e) => { e.stopPropagation(); browseChannel(-1); });
     nextChBtn.addEventListener('click', (e) => { e.stopPropagation(); browseChannel(1); });
@@ -1774,13 +1359,12 @@
     volUpBtn.addEventListener('click', (e) => { e.stopPropagation(); setVolumeDelta(0.05); });
     volDisplay.addEventListener('click', (e) => { e.stopPropagation(); toggleMute(); });
 
-    sidebar.addEventListener('click', (e) => e.stopPropagation());
-
-    // Boot
+    // Initial Bootstrap
     renderChannels();
     loadChannel(0);
     updateVolumeDisplay();
     validateAllStreams();
+    showOSD();
     setTimeout(adjustChannelRowSizes, 150);
   </script>
 </body>
