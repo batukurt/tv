@@ -628,12 +628,7 @@
     const CHANNELS = [
       // English
       { 
-        country: "EN", 
-        id: "BloombergTV.us", 
-        name: "Bloomberg TV+", 
-        group: "Business", 
-        logo: LOGOS.bloomberg, 
-        urls: [
+        country: "EN", id: "BloombergTV.us", name: "Bloomberg TV+", group: "Business", logo: LOGOS.bloomberg, urls: [
           "https://bloomberg-bloombergtv-1-eu.rakuten.wurl.tv/playlist.m3u8",
           "https://66e4bbba.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfQmxvb21iZXJnVFZQbHVzX0hMUw/playlist.m3u8",
           "https://d2d98ykcmmhgd4.cloudfront.net/v1/bloomberg_bloombergtv_2/samsungheadend_us/latest/main/hls/playlist.m3u8",
@@ -655,28 +650,28 @@
       { country: "FR", id: "BFMBusiness.fr", name: "BFM Business", group: "Business", logo: LOGOS.bfmbiz, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTechCo.fr", name: "BFM Tech & Co", group: "Science", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TECHANDCO/index.m3u8?end=END&start=LIVE" },
       { country: "FR", id: "BFMTV.fr", name: "BFM TV", group: "News", logo: LOGOS.bfm, url: "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_TV/index.m3u8?end=END&start=LIVE" },
-      
+      { country: "FR", id: "LCI.fr", name: "LCI", group: "News", logo: "https://upload.wikimedia.org/wikipedia/commons/2/23/LCI_logo_2016.svg", url: "https://lci-live-p2.tf1.fr/lci/1/hls/live_2500.m3u8" },
+      { country: "FR", id: "TMC.fr", name: "TMC", group: "General", logo: "https://upload.wikimedia.org/wikipedia/commons/a/ae/TMC_logo_2016.svg", url: "https://tf1-hls-live-ssl.tf1.fr/tmc/1/hls/live_2500.m3u8" },
+      { country: "FR", id: "FranceInfo.fr", name: "Franceinfo", group: "News", logo: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Franceinfo_logo_2016.svg", url: "https://francetv-hls-live-ssl.akamaized.net/live/franceinfo/master.m3u8" },
+      { country: "FR", id: "ArteFR.fr", name: "ARTE France", group: "Culture", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Arte_Logo_2017.svg", url: "https://artesimulcast.akamaized.net/hls/live/2031003/artelive_fr/index.m3u8" },
+            
       // Spain
       { country: "ES", id: "NegociosTV.es", name: "Negocios TV", group: "Business", logo: LOGOS.negocios, url: "https://streaming013.gestec-video.com/hls/negociostv.m3u8" },
+      { country: "ES", id: "La1.es", name: "La 1 (RTVE)", group: "General", logo: "https://upload.wikimedia.org/wikipedia/commons/9/91/La_1_de_RTVE_logo.svg", url: "https://rtvelivestream.akamaized.net/la1_main.m3u8" },
+      { country: "ES", id: "RTVE24h.es", name: "24h (RTVE)", group: "News", logo: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Canal_24_Horas_logo.svg", url: "https://rtvelivestream.akamaized.net/24h_main.m3u8" },
+      { country: "ES", id: "Teledeporte.es", name: "Teledeporte", group: "Sports", logo: "https://upload.wikimedia.org/wikipedia/commons/7/73/Teledeporte_logo.svg", url: "https://rtvelivestream.akamaized.net/tdp_main.m3u8" },
+      { country: "ES", id: "Antena3.es", name: "Antena 3", group: "General", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Antena_3_2017_logo.svg", url: "https://antena3-live.atresmedia.com/hls/master.m3u8" },
       
       // Germany
-      { 
-        country: "DE", 
-        id: "ntv.de", 
-        name: "n-tv", 
-        group: "News", 
-        logo: LOGOS.ntv, 
-        urls: [
-          "https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8",
-          "https://viamotionhsi.netplus.ch/live/eds/ntv/browser-HLS8/ntv.m3u8"
-        ],
-        url: "https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8",
-        pinnedTop: true 
-      },
+      { country: "DE", id: "ntv.de", name: "n-tv", group: "News", logo: LOGOS.ntv, urls: ["https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8","https://viamotionhsi.netplus.ch/live/eds/ntv/browser-HLS8/ntv.m3u8"],url: "https://dash4.antik.sk/live/test_ntv_tizen/playlist.m3u8",pinnedTop: true },
       { country: "DE", id: "DasErste.de", name: "Das Erste (ARD)", group: "General", logo: LOGOS.daserste, url: "https://live2.ard-mcdn.de/daserste/live/hls/de/master.m3u8" },
       { country: "DE", id: "ProSieben.de", name: "ProSieben", group: "General", logo: LOGOS.prosieben, url: "https://dash4.antik.sk/live/test_pro_sieben_tizen/playlist.m3u8" },
       { country: "DE", id: "WDR.de", name: "WDR", group: "General", logo: LOGOS.wdr, url: "https://dash3.antik.sk/live/test_wdr_tizen/playlist.m3u8" },
       { country: "DE", id: "ZDF.de", name: "ZDF", group: "General", logo: LOGOS.zdf, url: "https://dash4.antik.sk/live/test_zdf_avc_25p/playlist.m3u8" },
+      { country: "DE", id: "ArteDE.de", name: "ARTE Deutsch", group: "Culture", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Arte_Logo_2017.svg", url: "https://artesimulcast.akamaized.net/hls/live/2030999/artelive_de/index.m3u8" },
+      { country: "DE", id: "Tagesschau24.de", name: "tagesschau24", group: "News", logo: "https://upload.wikimedia.org/wikipedia/commons/0/02/Tagesschau24_2020.svg", url: "https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8" },
+      { country: "DE", id: "Welt.de", name: "WELT", group: "News", logo: "https://upload.wikimedia.org/wikipedia/commons/2/23/Welt_2018_logo.svg", url: "https://live2.welt.de/hls/live/welt_hls_live_2/master.m3u8" },
+      { country: "DE", id: "KiKA.de", name: "KiKA", group: "Kids", logo: "https://upload.wikimedia.org/wikipedia/commons/9/91/KiKA_Logo_2012.svg", url: "https://kika.akamaized.net/hls/live/2096695/kika/master.m3u8" },
       
       // Luxembourg
       { country: "LU", id: "RTLTeleLetzebuerg1.lu", name: "RTL Télé Lëtzebuerg 1", group: "General", logo: LOGOS.rtl, url: "https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8" },
