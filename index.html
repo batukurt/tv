@@ -12,9 +12,9 @@
   <style>
     :root {
       --bg-base: #000000;
-      --bg-surface: rgba(18, 22, 34, 0.92);
+      --bg-surface: rgba(18, 22, 34, 0.94);
       --bg-card: rgba(255, 255, 255, 0.1);
-      --bg-card-hover: rgba(255, 255, 255, 0.2);
+      --bg-card-hover: rgba(255, 255, 255, 0.22);
       --accent: #2563eb;
       --accent-glow: rgba(37, 99, 235, 0.5);
       --text: #f8fafc;
@@ -22,8 +22,7 @@
       --border: rgba(255, 255, 255, 0.14);
       --row-h: 36px;
       --sidebar-w: 360px;
-      --btn-h: 52px;
-      --btn-font: 0.98rem;
+      --btn-h: 46px;
     }
 
     * {
@@ -87,7 +86,7 @@
       background: #000;
     }
 
-    /* Initial fullscreen starter gate */
+    /* Fullscreen Initial Tap Gate */
     #fullscreen-gate {
       position: absolute;
       inset: 0;
@@ -115,60 +114,52 @@
     }
 
     /* =========================================================
-       TOUCH-FRIENDLY DOUBLE-SIZED OSD OVERLAY
+       TOP CONSOLIDATED OVERLAY BAR
        ========================================================= */
-    .osd-layer {
+    .unified-top-bar {
       position: absolute;
-      inset: 0;
-      z-index: 30;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 35;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      pointer-events: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
       opacity: 0;
-      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      padding: env(safe-area-inset-top, 14px) env(safe-area-inset-right, 14px) env(safe-area-inset-bottom, 16px) env(safe-area-inset-left, 14px);
+      transform: translateY(-100%);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease, padding-right 0.28s ease;
+      pointer-events: none;
     }
 
-    .osd-layer.visible {
+    .unified-top-bar.visible {
       opacity: 1;
+      transform: translateY(0);
       pointer-events: auto;
     }
 
-    /* Top HUD Bar */
-    .osd-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 16px;
-      background: var(--bg-surface);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
-      transform: translateY(-8px);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .osd-layer.visible .osd-top {
-      transform: translateY(0);
+    /* Shrink the right side of the top bar to yield space to the opened channel list */
+    .unified-top-bar.drawer-open {
+      padding-right: calc(var(--sidebar-w) + 12px);
     }
 
     .brand-signal {
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-width: 0;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .live-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       background: #ef4444;
       border-radius: 50%;
-      box-shadow: 0 0 12px #ef4444;
+      box-shadow: 0 0 10px #ef4444;
       animation: pulse 1.8s infinite;
       flex-shrink: 0;
     }
@@ -181,17 +172,17 @@
     .np-info {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       min-width: 0;
     }
 
     .np-logo {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
       background: #fff;
-      border-radius: 6px;
-      padding: 2px;
+      border-radius: 5px;
+      padding: 1px;
       flex-shrink: 0;
     }
 
@@ -200,20 +191,20 @@
     }
 
     .np-title {
-      font-size: 1.05rem;
+      font-size: 0.85rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 280px;
+      max-width: 140px;
     }
 
     .np-category {
-      font-size: 0.78rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       white-space: nowrap;
     }
 
@@ -222,9 +213,9 @@
       background: rgba(37, 99, 235, 0.3);
       border: 1px solid rgba(37, 99, 235, 0.8);
       color: #93c5fd;
-      font-size: 0.72rem;
+      font-size: 0.64rem;
       font-weight: 700;
-      padding: 2px 6px;
+      padding: 1px 5px;
       border-radius: 4px;
       line-height: 1;
     }
@@ -233,43 +224,46 @@
       display: inline-block;
     }
 
-    .osd-btn-group {
+    /* Controls dynamically share all remaining width */
+    .top-controls {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      gap: 6px;
+      flex: 1 1 0%;
+      min-width: 0;
     }
 
-    /* Doubled Touch Action Buttons */
-    .osd-btn {
+    .action-btn {
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text);
-      min-height: var(--btn-h);
-      padding: 0 18px;
-      border-radius: 10px;
+      height: var(--btn-h);
+      padding: 0 8px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: var(--btn-font);
+      font-size: 0.78rem;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       line-height: 1;
       white-space: nowrap;
+      flex: 1 1 0%; /* Dynamically share width equally */
+      min-width: 0;
       transition: background 0.15s, border-color 0.15s, transform 0.1s;
     }
 
-    .osd-btn:hover {
+    .action-btn:hover {
       background: var(--bg-card-hover);
       border-color: var(--accent);
     }
 
-    .osd-btn:active {
+    .action-btn:active {
       transform: scale(0.96);
     }
 
-    .osd-btn.btn-accent {
+    .action-btn.btn-accent {
       background: rgba(37, 99, 235, 0.38);
       border-color: rgba(37, 99, 235, 0.85);
       color: #bfdbfe;
@@ -279,62 +273,41 @@
       background: rgba(0, 0, 0, 0.45);
       border: 1px solid rgba(255, 255, 255, 0.25);
       color: #cbd5e1;
-      padding: 2px 5px;
+      padding: 2px 4px;
       border-radius: 4px;
       font-family: inherit;
-      font-size: 0.70rem;
+      font-size: 0.65rem;
       font-weight: 600;
       pointer-events: none;
     }
 
-    /* Bottom HUD Bar */
-    .osd-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: 10px 20px;
-      background: var(--bg-surface);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
-      align-self: center;
-      max-width: 95%;
-      transform: translateY(8px);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .osd-layer.visible .osd-bottom {
-      transform: translateY(0);
-    }
-
-    /* Doubled Volume Controller */
     .vol-group {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: rgba(255, 255, 255, 0.06);
-      padding: 4px 8px;
-      border-radius: 10px;
+      padding: 3px 6px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       height: var(--btn-h);
+      flex: 1.2 1 0%;
+      min-width: 0;
     }
 
     .vol-btn {
-      height: 38px !important;
-      min-height: 38px !important;
-      padding: 0 10px !important;
-      font-size: 0.90rem !important;
+      flex: 1 1 0% !important;
+      height: 32px !important;
+      min-height: 32px !important;
+      padding: 0 4px !important;
+      font-size: 0.75rem !important;
     }
 
     .vol-indicator {
-      font-size: 0.94rem;
+      font-size: 0.82rem;
       font-weight: 800;
       color: #cbd5e1;
-      padding: 0 8px;
-      min-width: 58px;
+      padding: 0 4px;
+      min-width: 44px;
       text-align: center;
       cursor: pointer;
       user-select: none;
@@ -345,18 +318,18 @@
     }
 
     /* =========================================================
-       TWO-COLUMN CHANNEL DRAWER (ENTIRE HEIGHT & TOUCH-FRIENDLY)
+       TWO-COLUMN FULL-HEIGHT CHANNEL DRAWER
        ========================================================= */
     .sidebar {
       position: absolute;
       top: 0 !important;
       right: 0 !important;
       bottom: 0 !important;
-      height: 100% !important; /* Uses entire viewport height */
+      height: 100% !important;
       width: var(--sidebar-w);
-      background: rgba(13, 17, 26, 0.97);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
+      background: rgba(13, 17, 26, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border-left: 1px solid var(--border);
       display: flex;
       flex-direction: column;
@@ -402,7 +375,6 @@
       color: #fff;
     }
 
-    /* Two-column touch list with zero scroll */
     .channel-list {
       flex: 1 1 0%;
       min-height: 0;
@@ -417,8 +389,8 @@
     .channel-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 0 10px;
+      gap: 8px;
+      padding: 0 8px;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.12s ease;
@@ -442,7 +414,7 @@
 
     .ch-logo-wrap {
       height: 72%;
-      max-height: 28px;
+      max-height: 26px;
       aspect-ratio: 4 / 3;
       border-radius: 4px;
       background: #fff;
@@ -451,7 +423,7 @@
       justify-content: center;
       overflow: hidden;
       flex-shrink: 0;
-      padding: 2px;
+      padding: 1px;
       pointer-events: none;
     }
 
@@ -464,7 +436,7 @@
     .ch-name {
       flex: 1;
       min-width: 0;
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
@@ -483,7 +455,7 @@
       color: #fff;
       padding: 10px 22px;
       border-radius: 10px;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       font-weight: 700;
       pointer-events: none;
       z-index: 100;
@@ -499,47 +471,56 @@
     /* Mobile Adaptations */
     @media (max-width: 768px) {
       :root {
-        --sidebar-w: min(92vw, 420px);
-        --btn-h: 46px;
-        --btn-font: 0.88rem;
+        --sidebar-w: min(92vw, 360px);
+        --btn-h: 40px;
       }
 
-      .osd-top {
-        padding: 8px 12px;
+      .unified-top-bar {
+        padding: 6px 8px;
+        gap: 6px;
+      }
+
+      .unified-top-bar.drawer-open {
+        padding-right: 8px; /* On phones, channel list covers full width */
       }
 
       .np-title {
-        max-width: 150px;
-        font-size: 0.92rem;
+        max-width: 100px;
+        font-size: 0.75rem;
       }
 
-      .osd-bottom {
-        padding: 8px 12px;
-        gap: 8px;
+      .action-btn {
+        padding: 0 4px;
+        font-size: 0.65rem;
+        gap: 3px;
       }
 
       .vol-group {
-        height: var(--btn-h);
+        padding: 2px 4px;
       }
 
       .vol-btn {
-        height: 34px !important;
-        min-height: 34px !important;
-        padding: 0 8px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding: 0 2px !important;
+      }
+
+      .vol-indicator {
+        min-width: 34px;
+        font-size: 0.70rem;
       }
 
       .channel-list {
-        padding: 4px 6px;
-        gap: 3px 5px;
+        padding: 4px;
+        gap: 3px 4px;
       }
 
       .channel-item {
-        padding: 0 8px;
-        gap: 8px;
+        padding: 0 6px;
       }
 
       .ch-name {
-        font-size: 0.74rem;
+        font-size: 0.70rem;
       }
     }
   </style>
@@ -559,45 +540,39 @@
 
       <div id="toastMessage" class="toast-msg"></div>
 
-      <!-- Touch and Mouse Active Overlay -->
-      <div class="osd-layer" id="osdLayer">
-        <!-- Top HUD Bar -->
-        <header class="osd-top" id="osdTop">
-          <div class="brand-signal">
-            <div class="live-dot" title="AFL TV Live Stream"></div>
-            <div class="np-info">
-              <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
-              <div class="np-text">
-                <div id="npTitle" class="np-title">Select channel</div>
-                <div id="npCategory" class="np-category">
-                  <span id="npCategoryText">-</span>
-                  <span id="npResBadge" class="res-badge">...</span>
-                </div>
+      <!-- Top Overlay Controls Bar (Dynamically shared width) -->
+      <header class="unified-top-bar" id="unifiedTopBar">
+        <div class="brand-signal">
+          <div class="live-dot" title="AFL TV Live Stream"></div>
+          <div class="np-info">
+            <img id="npLogo" class="np-logo" src="" alt="Channel Logo">
+            <div class="np-text">
+              <div id="npTitle" class="np-title">Select channel</div>
+              <div id="npCategory" class="np-category">
+                <span id="npCategoryText">-</span>
+                <span id="npResBadge" class="res-badge">...</span>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="osd-btn-group">
-            <button class="osd-btn" id="ccBtn" title="Subtitles [-]">💬 CC <kbd>-</kbd></button>
-            <button class="osd-btn" id="pipBtn" title="Picture in Picture [P]">⧉ PiP <kbd>P</kbd></button>
-            <button class="osd-btn" id="fsToggleBtn" title="Toggle Fullscreen [Enter / F11]">⛶ Full <kbd>Enter</kbd></button>
-            <button class="osd-btn btn-accent" id="channelsBtn" title="Channels Drawer [C]">☰ Channels <kbd>C</kbd></button>
-          </div>
-        </header>
-
-        <!-- Bottom HUD Bar -->
-        <footer class="osd-bottom" id="osdBottom">
-          <button class="osd-btn" id="prevChBtn" title="Previous Channel [◀]">◀ Prev <kbd>◀</kbd></button>
-          <button class="osd-btn btn-accent" id="playPauseBtn" title="Play / Pause [Space]">⏯ Play <kbd>Space</kbd></button>
-          <button class="osd-btn" id="nextChBtn" title="Next Channel [▶]">Next ▶ <kbd>▶</kbd></button>
+        <div class="top-controls">
+          <button class="action-btn" id="prevChBtn" title="Previous Channel [◀]">◀ Prev <kbd>◀</kbd></button>
+          <button class="action-btn btn-accent" id="playPauseBtn" title="Play / Pause [Space]">⏯ Play <kbd>Space</kbd></button>
+          <button class="action-btn" id="nextChBtn" title="Next Channel [▶]">Next ▶ <kbd>▶</kbd></button>
 
           <div class="vol-group">
-            <button class="osd-btn vol-btn" id="volDownBtn" title="Volume Down [▼]">🔉 <kbd>▼</kbd></button>
+            <button class="action-btn vol-btn" id="volDownBtn" title="Volume Down [▼]">🔉</button>
             <div class="vol-indicator" id="volDisplay" title="Mute/Unmute [M]"><span id="volPercent">100%</span> <kbd>M</kbd></div>
-            <button class="osd-btn vol-btn" id="volUpBtn" title="Volume Up [▲]">🔊 <kbd>▲</kbd></button>
+            <button class="action-btn vol-btn" id="volUpBtn" title="Volume Up [▲]">🔊</button>
           </div>
-        </footer>
-      </div>
+
+          <button class="action-btn" id="ccBtn" title="Subtitles [-]">💬 CC <kbd>-</kbd></button>
+          <button class="action-btn" id="pipBtn" title="Picture in Picture [P]">⧉ PiP <kbd>P</kbd></button>
+          <button class="action-btn" id="fsToggleBtn" title="Toggle Fullscreen [Enter / F11]">⛶ Full <kbd>Enter</kbd></button>
+          <button class="action-btn btn-accent" id="channelsBtn" title="Channels Drawer [C]">☰ Channels <kbd>C</kbd></button>
+        </div>
+      </header>
 
       <!-- 2-Column Channel Drawer covering entire viewport height -->
       <aside class="sidebar" id="sidebar">
@@ -611,6 +586,17 @@
   </div>
 
   <script>
+    const COUNTRY_META = {
+      EN: { key: "E" },
+      FR: { key: "F" },
+      ES: { key: "S" },
+      DE: { key: "D/G" },
+      LU: { key: "L" },
+      IT: { key: "I/İ" },
+      TR: { key: "T" },
+      SPECIAL: { key: "Z" }
+    };
+
     const LOGOS = {
       bloomberg: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23000'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='bold' font-size='16' text-anchor='middle'%3EBloomberg%3C/text%3E%3C/svg%3E`,
       cnbc: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40'%3E%3Crect width='100' height='40' fill='%23003366'/%3E%3Ctext x='50' y='26' fill='%23fff' font-family='sans-serif' font-weight='900' font-size='18' text-anchor='middle'%3ECNBC%3C/text%3E%3C/svg%3E`,
@@ -765,10 +751,10 @@
 
     // DOM References
     const appContainer = document.getElementById('app');
+    const unifiedTopBar = document.getElementById('unifiedTopBar');
     const viewport = document.getElementById('viewport');
     const video = document.getElementById('videoPlayer');
     const gate = document.getElementById('fullscreen-gate');
-    const osdLayer = document.getElementById('osdLayer');
     const sidebar = document.getElementById('sidebar');
     const channelListEl = document.getElementById('channelList');
     const closeDrawerBtn = document.getElementById('closeDrawerBtn');
@@ -795,7 +781,7 @@
     // App State
     let currentHls = null;
     let activeIndex = 0;
-    let osdTimeout = null;
+    let uiTimeout = null;
     let toastTimeout = null;
 
     function showToast(msg) {
@@ -807,29 +793,34 @@
       }, 1500);
     }
 
-    function showOSD() {
-      osdLayer.classList.add('visible');
+    /* Unified Touch / Mouse Activity Engine */
+    function showControlsAndDrawer() {
+      unifiedTopBar.classList.add('visible');
+      sidebar.classList.add('visible');
+      unifiedTopBar.classList.add('drawer-open');
       appContainer.classList.remove('hide-cursor');
-      clearTimeout(osdTimeout);
-      osdTimeout = setTimeout(() => {
-        if (!video.paused && !sidebar.classList.contains('visible')) {
-          hideOSD();
+      clearTimeout(uiTimeout);
+      uiTimeout = setTimeout(() => {
+        if (!video.paused) {
+          hideControlsAndDrawer();
         }
       }, 3500);
     }
 
-    function hideOSD() {
-      osdLayer.classList.remove('visible');
+    function hideControlsAndDrawer() {
+      unifiedTopBar.classList.remove('visible');
+      unifiedTopBar.classList.remove('drawer-open');
+      sidebar.classList.remove('visible');
       if (isFullscreen()) {
         appContainer.classList.add('hide-cursor');
       }
     }
 
-    function toggleOSD() {
-      if (osdLayer.classList.contains('visible')) {
-        hideOSD();
+    function toggleControlsAndDrawer() {
+      if (sidebar.classList.contains('visible') || unifiedTopBar.classList.contains('visible')) {
+        hideControlsAndDrawer();
       } else {
-        showOSD();
+        showControlsAndDrawer();
       }
     }
 
@@ -850,14 +841,14 @@
       video.volume = Number(target.toFixed(2));
       updateVolumeDisplay();
       showToast(`Volume: ${Math.round(video.volume * 100)}%`);
-      showOSD();
+      showControlsAndDrawer();
     }
 
     function toggleMute() {
       video.muted = !video.muted;
       updateVolumeDisplay();
       showToast(video.muted ? 'Muted' : `Volume: ${Math.round(video.volume * 100)}%`);
-      showOSD();
+      showControlsAndDrawer();
     }
 
     function toggleCaptions() {
@@ -884,7 +875,7 @@
       } else {
         showToast('Subtitles: Not available');
       }
-      showOSD();
+      showControlsAndDrawer();
     }
 
     async function togglePictureInPicture() {
@@ -897,7 +888,7 @@
       } catch (err) {
         console.warn("PiP error:", err);
       }
-      showOSD();
+      showControlsAndDrawer();
     }
 
     function updateActualResolutionBadge() {
@@ -983,9 +974,7 @@
             item.addEventListener('click', (e) => {
               e.stopPropagation();
               loadChannel(ch.originalIndex);
-              if (window.innerWidth > 900 && isFullscreen()) {
-                sidebar.classList.remove('visible');
-              }
+              hideControlsAndDrawer();
             });
             channelListEl.appendChild(item);
           });
@@ -1095,12 +1084,12 @@
         const candidate = CHANNELS[nextIndex];
         if (!candidate.skipOnBrowse && (candidate.isAvailable || candidate.isAvailable === undefined)) {
           loadChannel(nextIndex);
-          showOSD();
+          showControlsAndDrawer();
           return;
         }
       }
       loadChannel(nextIndex);
-      showOSD();
+      showControlsAndDrawer();
     }
 
     function cycleCountryCategory(countryCode) {
@@ -1120,7 +1109,7 @@
       } else {
         loadChannel(countryIndices[0]);
       }
-      showOSD();
+      showControlsAndDrawer();
     }
 
     function extractMaxHeightFromPlaylist(text) {
@@ -1206,7 +1195,7 @@
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
-      showOSD();
+      showControlsAndDrawer();
     }
 
     function togglePlayPause() {
@@ -1217,22 +1206,22 @@
         video.pause();
         playPauseBtn.innerHTML = '⏯ Play <kbd>Space</kbd>';
       }
-      showOSD();
+      showControlsAndDrawer();
     }
 
-    /* Touch and Mouse Interaction Listeners */
+    /* Single Tap / Click Handlers */
     viewport.addEventListener('click', (e) => {
-      if (e.target.closest('#fullscreen-gate') || e.target.closest('.osd-btn') || e.target.closest('.sidebar')) {
+      if (e.target.closest('#fullscreen-gate') || e.target.closest('.action-btn') || e.target.closest('.sidebar')) {
         return;
       }
-      toggleOSD();
+      toggleControlsAndDrawer();
     });
 
-    window.addEventListener('mousemove', showOSD);
-    window.addEventListener('touchstart', showOSD, { passive: true });
+    window.addEventListener('mousemove', showControlsAndDrawer);
+    window.addEventListener('touchstart', showControlsAndDrawer, { passive: true });
 
     document.addEventListener('fullscreenchange', () => {
-      showOSD();
+      showControlsAndDrawer();
       setTimeout(adjustChannelRowSizes, 100);
     });
 
@@ -1245,7 +1234,7 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (sidebar.classList.contains('visible')) {
-          sidebar.classList.remove('visible');
+          hideControlsAndDrawer();
           return;
         }
         if (isFullscreen()) {
@@ -1326,8 +1315,7 @@
         cycleCountryCategory('SPECIAL');
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        sidebar.classList.toggle('visible');
-        showOSD();
+        toggleControlsAndDrawer();
       }
     });
 
@@ -1344,12 +1332,11 @@
     ccBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleCaptions(); });
     channelsBtn.addEventListener('click', (e) => { 
       e.stopPropagation(); 
-      sidebar.classList.toggle('visible'); 
-      showOSD();
+      toggleControlsAndDrawer();
     });
     closeDrawerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      sidebar.classList.remove('visible');
+      hideControlsAndDrawer();
     });
 
     playPauseBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlayPause(); });
@@ -1364,7 +1351,7 @@
     loadChannel(0);
     updateVolumeDisplay();
     validateAllStreams();
-    showOSD();
+    showControlsAndDrawer();
     setTimeout(adjustChannelRowSizes, 150);
   </script>
 </body>
